@@ -27,12 +27,12 @@ export default function Signin() {
                 <Input className='mb-3 bg-white ' name='password' type='password' placeholder='***********' />
 
                 <div className='flex items-center gap-2 my-3'>
-                   <Checkbox className=' bg-white' /> 
+                   <Checkbox className=' bg-white cursor-pointer' /> 
                    <span>Keep me logged in</span>
                 </div>
 
                 <Button
-                className='text-white bg-[#182232]'
+                className='text-white bg-[#182232] cursor-pointer'
                 >Sign in to VerseShop</Button>
 
                 <p className='text-center my-4'> Don't have an account?
