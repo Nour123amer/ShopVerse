@@ -1,0 +1,107 @@
+import { Heart, Search, ShoppingBag, User, Menu } from "lucide-react";
+import { useState } from "react";
+import { Link } from "react-router";
+
+export default function Navbar() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <header className="bg-[#f5f5f5] px-4 md:px-8 py-5 border-b border-white">
+      <nav className="flex items-center justify-between">
+        
+        {/* Logo */}
+        <h1 className="text-2xl font-bold tracking-wide">
+          <Link to="/">ShopVerse</Link> 
+        </h1>
+
+        {/* Desktop Links */}
+        <ul className="hidden lg:flex items-center gap-8 text-sm text-gray-600">
+          <li className="font-medium text-black border-b border-black pb-1">
+            <Link to="/">Shop</Link>
+            
+          </li>
+
+          <li className="hover:text-black cursor-pointer transition">
+           <Link to="new-arrivals">New Arrivals</Link> 
+          </li>
+
+          <li className="hover:text-black cursor-pointer transition">
+            Collections
+          </li>
+
+          <li className="hover:text-black cursor-pointer transition">
+            Rewards
+          </li>
+        </ul>
+
+        {/* Search + Icons */}
+        <div className="hidden md:flex items-center gap-4">
+          
+          {/* Search */}
+          <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-full w-[260px]">
+            <Search size={18} className="text-gray-400" />
+
+            <input
+              type="text"
+              placeholder="Search luxury goods..."
+              className="bg-transparent outline-none text-sm w-full"
+            />
+          </div>
+
+          {/* Icons */}
+          <button className="hover:scale-110 transition">
+            <Heart size={20} />
+          </button>
+
+          <button className="hover:scale-110 transition">
+            <ShoppingBag size={20} />
+          </button>
+
+          <button className="hover:scale-110 transition">
+            <User size={20} />
+          </button>
+        </div>
+
+        {/* Mobile Menu Button */}
+        <button
+          onClick={() => setOpen(!open)}
+          className="md:hidden"
+        >
+          <Menu size={28} />
+        </button>
+      </nav>
+
+      {/* Mobile Menu */}
+      {open && (
+        <div className="md:hidden mt-6 bg-white rounded-2xl p-6 shadow-lg">
+          
+          {/* Mobile Search */}
+          <div className="flex items-center gap-2 bg-gray-100 px-4 py-3 rounded-xl mb-6">
+            <Search size={18} className="text-gray-400" />
+
+            <input
+              type="text"
+              placeholder="Search..."
+              className="bg-transparent outline-none text-sm w-full"
+            />
+          </div>
+
+          {/* Mobile Links */}
+          <ul className="flex flex-col gap-5 text-gray-700">
+            <li className="font-medium">Shop</li>
+            <li>New Arrivals</li>
+            <li>Collections</li>
+            <li>Rewards</li>
+          </ul>
+
+          {/* Mobile Icons */}
+          <div className="flex items-center gap-5 mt-8">
+            <Heart size={20} />
+            <ShoppingBag size={20} />
+            <User size={20} />
+          </div>
+        </div>
+      )}
+    </header>
+  );
+}
