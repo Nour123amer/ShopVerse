@@ -142,3 +142,8 @@ body {
     @apply font-sans;
   }
 }
+
+.sign-left-side{
+  background-image: url("./Luxury lifestyle.png");
+  background-size: cover;
+}
