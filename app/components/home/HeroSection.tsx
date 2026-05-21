@@ -1,10 +1,10 @@
 export default function HeroSection() {
   return (
     <section className="bg-[#f5f5f5] px-4 md:px-8 py-6 ">
-      <div className="grid grid-cols-1 lg:grid-cols-2 overflow-hidden rounded-3xl bg-white">
+      <div className="grid grid-cols-1 lg:grid-cols-2 overflow-hidden rounded-3xl bg-white h-[calc(100vh-100px)]">
         
         {/* Left Content */}
-        <div className="p-8 md:p-14 flex flex-col justify-center">
+        <div className="p-8 md:p-14 lg:pt-26 flex flex-col ">
           <span className="bg-gray-200 text-xs px-3 py-1 rounded-full w-fit mb-6">
             AUTUMN COLLECTION 2024
           </span>
