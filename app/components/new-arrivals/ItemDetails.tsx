@@ -1,5 +1,6 @@
 import { Heart } from 'lucide-react'
 import React from 'react'
+import { Link } from 'react-router'
 
 export default function ItemDetails() {
     return (
@@ -196,9 +197,9 @@ export default function ItemDetails() {
                             <h2 className="text-2xl font-semibold tracking-tight">Complete Your Look</h2>
                             <p className="text-sm text-gray-500 mt-1">Pair your timepiece with our curated accessories</p>
                         </div>
-                        <a href="#" className="text-sm font-medium underline flex items-center gap-1 hover:text-gray-600 transition-colors">
+                        <Link to="/shop" className="text-sm font-medium underline flex items-center gap-1 hover:text-gray-600 transition-colors">
                             View Collection <span>&rarr;</span>
-                        </a>
+                        </Link>
                     </div>
 
                     {/* Product Cards Grid */}

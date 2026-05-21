@@ -19,16 +19,16 @@ export default function Navbar() {
         {/* Desktop Links */}
         <ul className="hidden lg:flex items-center gap-8 text-sm text-gray-600">
           <li className="font-medium text-black border-b border-black pb-1">
-            <Link to="/">Shop</Link>
+            <Link to="/shop">Shop</Link>
             
           </li>
 
           <li className="hover:text-black cursor-pointer transition">
-           <Link to="new-arrivals">New Arrivals</Link> 
+           <Link to="/new-arrivals">New Arrivals</Link> 
           </li>
 
           <li className="hover:text-black cursor-pointer transition">
-            Collections
+            <Link to="/collections">Collections</Link> 
           </li>
 
           <li className="hover:text-black cursor-pointer transition">
@@ -105,10 +105,10 @@ export default function Navbar() {
 
           {/* Mobile Links */}
           <ul className="flex flex-col gap-5 text-gray-700">
-            <li className="font-medium">Shop</li>
-            <li>New Arrivals</li>
-            <li>Collections</li>
-            <li>Rewards</li>
+            <li className="font-medium"> <Link to="/shop">Shop</Link></li>
+            <li><Link to="/new-arrivals">New Arrivals</Link></li>
+            <li><Link to="/collections">Collections</Link></li>
+            <li><Link to="/rewards">Rewards</Link></li>
           </ul>
 
           {/* Mobile Icons */}
