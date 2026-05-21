@@ -84,7 +84,7 @@ export default function Navbar() {
           onClick={() => setOpen(!open)}
           className="md:hidden"
         >
-          <Menu size={28} />
+          <Menu className="cursor-pointer" size={28} />
         </button>
       </nav>
 
@@ -112,11 +112,21 @@ export default function Navbar() {
           </ul>
 
           {/* Mobile Icons */}
-          <div className="flex items-center gap-5 mt-8">
+          {isLoggedIn ?(
+            <div className="flex items-center gap-5 mt-8">
             <Heart size={20} />
             <ShoppingBag size={20} />
             <User size={20} />
           </div>
+          ):(
+            <button className="w-full mt-8 px-4 py-2 bg-black font-semibold text-white rounded-full text-sm
+             hover:bg-gray-800 transition cursor-pointer"
+             onClick={()=>(navigte("/sign-in"))}
+             >
+              Sign In
+            </button>
+          )}
+          
         </div>
       )}
     </header>
