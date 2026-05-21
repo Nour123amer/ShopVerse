@@ -38,7 +38,7 @@ export default function BestSellers() {
     <section className="px-4 md:px-8 py-10 bg-[#f5f5f5]">
       <h2 className="text-3xl font-bold mb-8">Best Sellers</h2>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {bestSellers.map((item) => (
           <div key={item.id} className="bg-white rounded-2xl p-4">
             <img
