@@ -1,9 +1,11 @@
 import { Heart, Search, ShoppingBag, User, Menu } from "lucide-react";
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const isLoggedIn = false; // Placeholder for authentication state
+  const navigte = useNavigate();
 
   return (
     <header className="bg-[#f5f5f5] px-4 md:px-8 py-5 border-b border-white">
@@ -38,7 +40,7 @@ export default function Navbar() {
         <div className="hidden md:flex items-center gap-4">
           
           {/* Search */}
-          <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-full w-[260px]">
+          <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-full w-65">
             <Search size={18} className="text-gray-400" />
 
             <input
@@ -49,7 +51,10 @@ export default function Navbar() {
           </div>
 
           {/* Icons */}
-          <button className="hover:scale-110 transition">
+
+          {isLoggedIn ? (
+            <>
+             <button className="hover:scale-110 transition">
             <Heart size={20} />
           </button>
 
@@ -60,6 +65,18 @@ export default function Navbar() {
           <button className="hover:scale-110 transition">
             <User size={20} />
           </button>
+
+            </>
+          ):(
+            <button className="px-4 py-2 bg-black font-semibold text-white rounded-full text-sm
+             hover:bg-gray-800 transition cursor-pointer"
+             onClick={()=>(navigte("/sign-in"))}
+             >
+              Sign In
+            </button>
+          )}
+
+         
         </div>
 
         {/* Mobile Menu Button */}
