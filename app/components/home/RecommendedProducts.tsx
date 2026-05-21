@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 const products = [
   {
     id: 1,
@@ -34,6 +36,7 @@ const products = [
 ];
 
 export default function RecommendedProducts() {
+  const [isFavorite, setIsFavorite] = useState(false);
   return (
     <section className="px-4 md:px-8 py-10 bg-[#f5f5f5]">
       <h2 className="text-2xl font-bold mb-8">
@@ -53,7 +56,11 @@ export default function RecommendedProducts() {
                 className="w-full h-65 object-cover"
               />
 
-              <button className="absolute w-8 h-8 top-4 flex items-center justify-center right-4 bg-white p-2 rounded-full">
+              <button 
+              onClick={()=>{setIsFavorite(!isFavorite)}}
+              className={`absolute w-8 h-8 top-4 flex items-center justify-center
+               right-4 bg-white p-2 rounded-full cursor-pointer
+               ${isFavorite  ? 'text-red-500' : 'text-gray-500'  } `}>
                 ♡
               </button>
             </div>

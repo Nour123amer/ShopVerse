@@ -1,4 +1,7 @@
+import { useNavigate } from "react-router";
+
 export default function HeroSection() {
+  const navigate = useNavigate();
   return (
     <section className="bg-[#f5f5f5] px-4 md:px-8 py-6 ">
       <div className="grid grid-cols-1 lg:grid-cols-2 overflow-hidden rounded-3xl bg-white h-[calc(100vh-100px)]">
@@ -23,11 +26,13 @@ export default function HeroSection() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 mt-10">
-            <button className="bg-[#111827] text-white px-6 py-3 rounded-xl">
+            <button className="cursor-pointer bg-[#111827] text-white px-6 py-3 rounded-xl">
               Shop Now
             </button>
 
-            <button className="border border-gray-300 px-6 py-3 rounded-xl">
+            <button
+            onClick={()=>{navigate('/collections')}}
+            className="cursor-pointer border border-gray-300 px-6 py-3 rounded-xl">
               View Lookbook
             </button>
           </div>

@@ -22,7 +22,7 @@ export default function Newsletter() {
             className="flex-1 px-5 py-4 rounded-xl bg-[#1E293B] outline-none"
           />
 
-          <button className="bg-white text-black px-8 py-4 rounded-xl font-medium">
+          <button className="bg-white cursor-pointer text-black px-8 py-4 rounded-xl font-medium">
             Subscribe
           </button>
         </div>
