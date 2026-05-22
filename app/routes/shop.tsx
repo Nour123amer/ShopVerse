@@ -1,5 +1,6 @@
-import { Heart, ChevronLeft, ChevronRight } from "lucide-react";
+import { Heart, ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
 import { useState } from "react";
+import { Checkbox } from "~/components/ui/checkbox";
 
 const products = [
   {
@@ -171,6 +172,7 @@ export default function Shop() {
   const productsPerPage = 6;
   const totalPages = Math.ceil(products.length / productsPerPage);
   const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfLastPage = indexOfLastProduct /6
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   let currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -215,17 +217,24 @@ export default function Shop() {
         </div>
 
         {/* Sort */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 ">
           <span className="text-sm text-gray-500">
             Sort by:
           </span>
 
-          <select className="border border-gray-300 bg-white rounded-xl px-4 py-2 outline-none">
-            <option>Recommended</option>
-            <option>Newest</option>
-            <option>Price Low</option>
-            <option>Price High</option>
-          </select>
+          <div className="relative w-fit">
+            <select className="appearance-none border bg-white border-gray-300 rounded-xl px-4 py-2 pr-10 outline-none">
+              <option>Recommended</option>
+              <option>Newest</option>
+              <option>Price Low</option>
+              <option>Price High</option>
+            </select>
+            <ChevronDown
+              size={18}
+              className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"
+            />
+          </div>
+
         </div>
       </div>
 
@@ -241,26 +250,27 @@ export default function Shop() {
               Category
             </h3>
 
+
             <div className="space-y-4">
-              <label className="flex items-center gap-3 text-sm">
-                <input onChange={() => { setSelectedCategory("Apparel") }} type="checkbox" />
-                Apparel
-              </label>
 
-              <label className="flex items-center gap-3 text-sm">
-                <input onChange={() => { setSelectedCategory("Accessories") }} type="checkbox" defaultChecked />
-                Accessories
-              </label>
 
-              <label className="flex items-center gap-3 text-sm">
-                <input onChange={() => { setSelectedCategory("Home Office") }} type="checkbox" />
-                Home Office
-              </label>
+              {["Apparel", "Accessories", "Home Office", "Tech"].map((category) => (
+                <label
+                  key={category}
+                  className="flex items-center gap-3 text-sm cursor-pointer"
+                >
+                  <input
+                    type="radio"
+                    name="category"
+                    value={category}
+                    checked={selectedCategory === category}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                    className="w-5 h-5 accent-blue-800"
+                  />
 
-              <label className="flex items-center gap-3 text-sm">
-                <input onChange={() => { setSelectedCategory("Tech") }} type="checkbox" />
-                Tech
-              </label>
+                  {category}
+                </label>
+              ))}
             </div>
           </div>
 
@@ -353,14 +363,14 @@ export default function Shop() {
           {/* Pagination */}
           <div className="flex items-center justify-center gap-5 mt-14 text-gray-500">
 
-            <button>
+            <button className="cursor-pointer" onClick={()=>{setCurrentPage(indexOfLastPage-1)}}>
               <ChevronLeft size={18} />
             </button>
 
             {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
               <button
                 key={page}
-                className={`${currentPage === page ? 'text-black font-semibold' : 'text-gray-500'
+                className={`cursor-pointer ${currentPage === page ? 'text-black font-semibold' : 'text-gray-500'
                   }`}
                 onClick={() => setCurrentPage(page)}
               >
@@ -368,7 +378,7 @@ export default function Shop() {
               </button>
             ))}
 
-            <button>
+            <button className="cursor-pointer" onClick={()=>{setCurrentPage(indexOfLastPage+1)}}>
               <ChevronRight size={18} />
             </button>
           </div>

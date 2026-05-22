@@ -1,8 +1,42 @@
 import { Heart } from 'lucide-react'
-import React from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
 
+type Model ={
+    src:string | undefined;
+    type:string
+}
+
 export default function ItemDetails() {
+    const [selectedModel, setSelectedModel] = useState("Steel");
+    const [modelType, setModelType] = useState<Model>();
+    const [isSteelActive, setIsSteelActive] = useState(false);
+        const [isNylonActive, setIsNylonActive] = useState(false);
+            const [isLeatherActive, setIsLeatherActive] = useState(false);
+
+
+    const models = [
+        {
+            src: "https://images.unsplash.com/photo-1523170335258-f5ed11844a49",
+            type: "Steel"
+        },
+        {
+            src: "https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3",
+            type: "Nylon"
+        }, {
+            src: "https://images.unsplash.com/photo-1547996160-81dfa63595aa",
+            type: "Leather"
+        }
+    ]
+
+    console.log("selected model ===>", selectedModel);
+
+    useEffect(()=>{
+        setModelType( models.find((model)=> model.type === selectedModel))
+
+    },[selectedModel])
+
+    console.log(modelType?.src)
     return (
         <>
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
@@ -13,9 +47,9 @@ export default function ItemDetails() {
                     {/* Main Image */}
                     <div className="rounded-3xl overflow-hidden">
                         <img
-                            src="https://images.unsplash.com/photo-1523170335258-f5ed11844a49"
+                            src={modelType?.src}
                             alt="watch"
-                            className="w-full h-[500px] object-cover"
+                            className="w-full h-125 object-cover"
                         />
                     </div>
 
@@ -38,21 +72,8 @@ export default function ItemDetails() {
                         </div>
                     </div>
 
-                    {/* Description */}
-                    <div className="mt-10">
-                        <h2 className="text-3xl font-bold text-gray-900">
-                            Product Description
-                        </h2>
-
-                        <p className="text-gray-500 leading-8 mt-5 max-w-4xl">
-                            The Aeris Chronograph represents the pinnacle of precision
-                            engineering and understated luxury. Designed for the modern
-                            professional, it features a Swiss-made movement housed in an
-                            aerospace-grade titanium case. Its midnight dial offers
-                            unparalleled legibility under any lighting condition.
-                        </p>
                     </div>
-                </div>
+
 
                 {/* Product Info */}
                 <div>
@@ -96,15 +117,27 @@ export default function ItemDetails() {
                             </p>
 
                             <div className="flex flex-wrap gap-3">
-                                <button className="border border-black px-5 py-3 rounded-xl">
+                                <button
+                                    onClick={() => { setSelectedModel("Leather")
+                                        setIsLeatherActive(true)
+                                     }}
+                                    className={` ${isLeatherActive ?" border-black":""} border cursor-pointer  px-5 py-3 rounded-xl`}>
                                     Leather
                                 </button>
 
-                                <button className="border border-gray-300 px-5 py-3 rounded-xl">
+                                <button
+                                    onClick={() => { setSelectedModel("Nylon")
+                                        setIsNylonActive(true)
+                                     }}
+                                    className={`${isNylonActive ?" border-black":""} cursor-pointer border border-gray-300 px-5 py-3 rounded-xl `}>
                                     Nylon
                                 </button>
 
-                                <button className="border border-gray-300 px-5 py-3 rounded-xl">
+                                <button
+                                    onClick={() => { setSelectedModel("Steel") 
+                                        setIsSteelActive(true)
+                                    }}
+                                    className={`${isSteelActive ?" border-black":""} cursor-pointer border border-gray-300 px-5 py-3 rounded-xl`}>
                                     Steel
                                 </button>
                             </div>
@@ -114,20 +147,20 @@ export default function ItemDetails() {
                         <div className="flex gap-4 mt-8">
 
                             <div className="flex items-center justify-between border border-gray-300 rounded-xl px-5 py-4 flex-1">
-                                <button className="text-xl">−</button>
+                                <button className="cursor-pointer text-xl">−</button>
 
                                 <span>1</span>
 
-                                <button className="text-xl">+</button>
+                                <button className="cursor-pointer text-xl">+</button>
                             </div>
 
-                            <button className="border border-gray-300 px-5 rounded-xl">
+                            <button className="cursor-pointer border border-gray-300 px-5 rounded-xl">
                                 <Heart size={20} />
                             </button>
                         </div>
 
                         {/* Add To Bag */}
-                        <button className="w-full bg-[#0F172A] text-white py-4 rounded-xl mt-8 font-medium hover:opacity-90 transition">
+                        <button className="cursor-pointer w-full bg-[#0F172A] text-white py-4 rounded-xl mt-8 font-medium hover:opacity-90 transition">
                             ADD TO BAG
                         </button>
 
