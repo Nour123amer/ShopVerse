@@ -13,21 +13,6 @@ export default function Signup() {
                     <h2 className='text-[#182232]'>Welcome Back</h2>
                     <p className='text-[#45474C]'>Enter your details to create your premium account.</p>
 
-                    {/* <div className='flex items-center justify-center w-2/3 mx-auto gap-2 md:gap-4 mt-10'>
-                        <Button className='flex items-center px-8 py-4 cursor-pointer bg-transparent text-[#777a7f] border-[#94A3B8] border-1'>
-                            <img className='w-6 h-6' src='https://upload.wikimedia.org/wikipedia/commons/3/3c/Google_Favicon_2025.svg' />
-                            <span>Google</span>
-                        </Button>
-                        <Button className='flex items-center px-8 py-4 cursor-pointer bg-transparent text-[#777a7f] border-[#94A3B8] border-1'>
-                            <img className='w-6 h-6' src='/github.png' />
-                            <span>Github</span>
-                        </Button>
-                    </div> */}
-
-                    {/* <div className='credential-login relative mt-6 '>
-                        <p className='text-center text-[#45474C]'>OR CONTINUE WITH EMAIL</p>
-                    </div> */}
-
                     <form className='w-full lg:w-1/2 mx-auto flex flex-col justify-center my-8 bg-white     rounded-lg p-6'>
                          <div>
                             <Label className='mb-2 text-[#45474C]'>Full Name</Label>
@@ -56,7 +41,7 @@ export default function Signup() {
                         >Sign up to VerseShop</Button>
 
                         <p className='text-center my-4'> Have an account?
-                            <Link className='text-[#182232]' to="/sign-up"> Sign In</Link></p>
+                            <Link className='text-[#182232]' to="/sign-in"> Sign In</Link></p>
 
 
                     </form>
