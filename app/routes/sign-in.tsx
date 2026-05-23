@@ -4,16 +4,28 @@ import { Button } from '~/components/ui/button'
 import { Checkbox } from '~/components/ui/checkbox'
 import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label'
+import * as z from "zod"; 
 
 export default function Signin() {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const loginValidation = z.object({
+         email:z.string().email("Invalid email address."),
+         password:z.string().min(6, "Password is incorrect!"),
+    })
+
+    type signinData = z.infer<typeof loginValidation>;
 
     const handleSubmit = async (e:React.FormEvent)=>{
         e.preventDefault();
-        if(email !=="" && password !==""){
-            try{
+        const validateResult = loginValidation.safeParse({
+            email,
+            password
+        })
+
+        if(!validateResult.success) return
+        try{
                 const res = await fetch("api/auth/login",{
                 method:"POST",
                 headers:{"Content-Type":"application/json"},
@@ -34,7 +46,7 @@ export default function Signin() {
             }
             
         }
-    }
+    
 
     
 
