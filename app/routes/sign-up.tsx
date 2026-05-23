@@ -4,6 +4,7 @@ import { Button } from '~/components/ui/button'
 import { Checkbox } from '~/components/ui/checkbox'
 import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label'
+import * as z from "zod"; 
 
 export default function Signup() {
     const [firstName, setFirstName] = useState("");
@@ -11,7 +12,20 @@ export default function Signup() {
     const [phoneNumber, setPhoneNumber] = useState("");
     const [email, setEmail] = useState("");
     const [pass, setPass] = useState("");
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+ 
+const signupValidation = z.object({ 
+  firstName: z.string().min(3,"must be at least 3 characters and start with Capital letter"),
+  lastName: z.string().min(3,"must be at least 3 characters and start with Capital letter"),
+  phoneNumber: z.string().regex(
+      /^(010|011|012|015)\d{8}$/,
+      "Invalid Egyptian phone number"
+    ),
+  email:z.string().email("Invalid email address."),
+  pass:z.string().min(6, "Password must be at least 6 characters"),
+});
+
+type signupData = z.infer<typeof signupValidation>
 
 
 
@@ -30,8 +44,17 @@ export default function Signup() {
         console.log("verify otp result",data)
     }
     const handleRegister = async (e: React.FormEvent) => {
-        e.preventDefault()
-        if (firstName !== "" && lastName !== "" && phoneNumber !== "" && email !== "" && pass !== "") {
+        e.preventDefault();
+        const validationResult = signupValidation.safeParse({
+            firstName,
+            lastName,
+            email,
+            phoneNumber,
+            pass
+        });
+
+        if(!validationResult.success) return;
+
             try {
                 const res = await fetch("/api/auth/register", {
                     method: "POST",
@@ -60,7 +83,7 @@ export default function Signup() {
             }
         }
 
-    }
+    
 
 
     return (
