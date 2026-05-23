@@ -7,4 +7,14 @@ export default defineConfig({
   resolve: {
     tsconfigPaths: true,
   },
+   server: {
+    proxy: {
+      "/api": {
+        target: "https://authservice-8egj.onrender.com",
+        changeOrigin: true,
+        secure: true,
+        rewrite: (path) => path.replace(/^\/api/, ""),
+      },
+    },
+  },
 });

@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link } from 'react-router'
 import { Button } from '~/components/ui/button'
 import { Checkbox } from '~/components/ui/checkbox'
@@ -5,6 +6,38 @@ import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label'
 
 export default function Signin() {
+
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
+    const handleSubmit = async (e:React.FormEvent)=>{
+        e.preventDefault();
+        if(email !=="" && password !==""){
+            try{
+                const res = await fetch("api/auth/login",{
+                method:"POST",
+                headers:{"Content-Type":"application/json"},
+                body: JSON.stringify({
+                      "identifierType": "email",
+                    identifier:email,
+                    countryCode: "EG",
+                    password:password
+                })
+            });
+            const data = await res.json();
+
+            if (res?.ok) console.log("success login")
+                if (!res?.ok) console.log(data.message)
+            console.log("login result :",data)
+            }catch(error){
+                console.log("error", error)
+            }
+            
+        }
+    }
+
+    
+
     return (
         <>
             <div className='bg-[#f5f5f5] p-6 min-h-screen'>
@@ -29,17 +62,26 @@ export default function Signin() {
                         <p className='text-center text-[#45474C]'>OR CONTINUE WITH EMAIL</p>
                     </div>
 
-                    <form className='w-full lg:w-1/2 mx-auto flex flex-col justify-center my-8 bg-white     rounded-lg p-6'>
+                    <form
+                    onSubmit={handleSubmit}
+                    className='w-full lg:w-1/2 mx-auto flex flex-col justify-center my-8 bg-white     rounded-lg p-6'>
                         <div>
                             <Label className='mb-2 text-[#45474C]'>Email Address</Label>
-                            <Input className='mb-3 bg-white text-[#C5C6CD]' name="email" type='email' placeholder="Alex@gmail.com" />
+                            <Input
+                            value={email}
+                            onChange={(e)=>{setEmail(e.target.value)}}
+                            className='mb-3 bg-white text-[#C5C6CD]' name="email" type='email' placeholder="Alex@gmail.com" />
                         </div>
                         <div>
                             <Label className='flex items-center justify-between mb-2 text-[#45474C]'>
                                 <span>Password</span>
-                                <span>Forgot?</span>
+                                <span className='cursor-pointer'>
+                                   <Link  to="/reset-password">Forgot?</Link> </span>
                             </Label>
-                            <Input className='mb-3 bg-white text-[#C5C6CD] ' name='password' type='password' placeholder='***********' />
+                            <Input
+                            value={password}
+                            onChange={(e)=>{setPassword(e.target.value)}}
+                            className='mb-3 bg-white text-[#C5C6CD] ' name='password' type='password' placeholder='***********' />
 
                         </div>
                         <div className='flex items-center gap-2 my-3'>
@@ -48,6 +90,7 @@ export default function Signin() {
                         </div>
 
                         <Button
+                            type='submit'
                             className='text-white bg-[#182232] cursor-pointer'
                         >Sign in to VerseShop</Button>
 
