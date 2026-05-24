@@ -3,34 +3,48 @@ import { Link } from 'react-router';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label';
+import * as z from "zod";
+
+const verifyValidation = z.object({
+    email: z.string().email("Invalid email address."),
+})
 
 export default function verifyOtp() {
     const [email, setEmail] = useState("");
     const [code, setCode] = useState("");
+    const [errors, setErrors] = useState<Record<string, string[]>>({});
+
+
 
     const handleVerifyOTP = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (email !== "") {
-            try {
-                const result = await fetch("/api/auth/verify-otp", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        "identifierType": "email",
-                        "identifier": `${email}`,
-                        "countryCode": "EG",
-                        "code": "123456"
-                    })
-                });
+        const validateVerification = verifyValidation.safeParse({ email })
+        if (!validateVerification.success) {
+            setErrors(
+                validateVerification.error.flatten().fieldErrors
+            );
+            return;
+        }
+        try {
+            const result = await fetch("/api/auth/verify-otp", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    "identifierType": "email",
+                    "identifier": `${email}`,
+                    "countryCode": "EG",
+                    "code": "123456"
+                })
+            });
 
-                const data = await result.json();
-                console.log("verify otp result =>", data)
+            const data = await result.json();
+            console.log("verify otp result =>", data)
 
-            } catch (error) {
-                console.log("error =>", error)
-            }
+        } catch (error) {
+            console.log("error =>", error)
         }
     }
+
 
     return (
 
@@ -52,16 +66,13 @@ export default function verifyOtp() {
                                 value={email}
                                 onChange={(e) => { setEmail(e.target.value) }}
                                 className='mb-3 bg-white text-[#C5C6CD]' name="email" type='email' placeholder="Alex@gmail.com" />
+                            {errors.email && (
+                                <p className="text-red-500 text-sm">
+                                    {errors.email[0]}
+                                </p>
+                            )}
+
                         </div>
-
-                        {/* <div>
-                            <Label className='mb-2 text-[#45474C]'>OTP Code</Label>
-                            <Input
-                                value={code}
-                                onChange={(e) => { setCode(e.target.value) }}
-                                className='mb-3 bg-white text-[#C5C6CD]' name="code" type='text' placeholder="123456" />
-                        </div> */}
-
 
 
                         <Button

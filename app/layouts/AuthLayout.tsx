@@ -1,5 +1,6 @@
 
 import { Outlet } from 'react-router'
+import { Toaster } from 'sonner'
 
 export default function AuthLayout() {
     return (
@@ -20,6 +21,8 @@ export default function AuthLayout() {
                 <div className='w-full md:w-1/2'>
                     <Outlet />
                 </div>
+                <Toaster
+                 position={'top-right'} duration={2000} />
 
             </div>
         </>

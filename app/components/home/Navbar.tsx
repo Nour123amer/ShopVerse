@@ -1,11 +1,18 @@
 import { Heart, Search, ShoppingBag, User, Menu } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const isLoggedIn = false; // Placeholder for authentication state
   const navigte = useNavigate();
+  const [accessToken, setAccessToken]= useState<string|null>();
+
+  useEffect(()=>{
+   const token = localStorage.getItem("token");
+   setAccessToken(token)
+
+  },[])
 
   return (
     <header className="bg-[#f5f5f5] px-4 md:px-8 py-5 border-b border-white">
@@ -52,7 +59,7 @@ export default function Navbar() {
 
           {/* Icons */}
 
-          {isLoggedIn ? (
+          {accessToken ? (
             <>
              <button className="hover:scale-110 transition">
             <Heart size={20} />

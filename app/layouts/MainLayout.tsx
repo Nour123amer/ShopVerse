@@ -1,5 +1,6 @@
 
 import { Outlet } from 'react-router'
+import { Toaster } from 'sonner'
 import Footer from '~/components/home/Footer'
 import Navbar from '~/components/home/Navbar'
 
@@ -11,6 +12,7 @@ export default function MainLayout() {
                 <main className='px-4 md:px-8 bg-[#f5f5f5] py-0'>
                     <Outlet />
                 </main>
+                <Toaster position={'top-right'} />
                 <Footer />
             </div>
         </>
