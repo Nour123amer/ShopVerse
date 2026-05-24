@@ -9,7 +9,7 @@ export default function MainLayout() {
         <>
             <div className='min-h-screen'>
                 <Navbar />
-                <main className='px-4 md:px-8 bg-[#f5f5f5] py-0'>
+                <main className='px-4 md:px-8 bg-[#f5f5f5] py-4'>
                     <Outlet />
                 </main>
                 <Toaster position={'top-right'} />

@@ -15,7 +15,7 @@ export default function Navbar() {
   },[])
 
   return (
-    <header className="bg-[#f5f5f5] px-4 md:px-8 py-5 border-b border-white">
+    <header className="bg-[#f5f5f5] px-4 md:px-8 py-5 border-b border-white ">
       <nav className="flex items-center justify-between">
         
         {/* Logo */}
@@ -61,15 +61,21 @@ export default function Navbar() {
 
           {accessToken ? (
             <>
-             <button className="hover:scale-110 transition">
+             <button 
+             onClick={()=>{navigte("/favorite")}}
+             className="cursor-pointer hover:scale-110 transition">
             <Heart size={20} />
           </button>
 
-          <button className="hover:scale-110 transition">
+          <button
+          onClick={()=>{navigte("/cart")}}
+          className="cursor-pointer hover:scale-110 transition">
             <ShoppingBag size={20} />
           </button>
 
-          <button className="hover:scale-110 transition">
+          <button
+          onClick={()=>{navigte("/profile")}}
+          className="cursor-pointer hover:scale-110 transition">
             <User size={20} />
           </button>
 
