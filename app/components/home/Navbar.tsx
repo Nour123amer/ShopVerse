@@ -119,7 +119,7 @@ export default function Navbar() {
           </ul>
 
           {/* Mobile Icons */}
-          {isLoggedIn ?(
+          {accessToken ?(
             <div className="flex items-center gap-5 mt-8">
             <Heart size={20} />
             <ShoppingBag size={20} />

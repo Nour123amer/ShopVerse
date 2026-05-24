@@ -10,7 +10,7 @@ export default defineConfig({
    server: {
     proxy: {
       "/api": {
-        target: "https://authservice-8egj.onrender.com",
+        target: process.env.PUBLIC_URL,
         changeOrigin: true,
         secure: true,
         rewrite: (path) => path.replace(/^\/api/, ""),
