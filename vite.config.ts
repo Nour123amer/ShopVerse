@@ -10,7 +10,7 @@ export default defineConfig({
    server: {
     proxy: {
       "/api": {
-        target: process.env.PUBLIC_URL,
+        target: process.env.VITE_PUBLIC_URL,
         changeOrigin: true,
         secure: true,
         rewrite: (path) => path.replace(/^\/api/, ""),

@@ -4,6 +4,7 @@ import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label';
 import * as z from "zod";
+import { API_URL } from "~/lib/api";
 
 const verifyValidation = z.object({
     email: z.string().email("Invalid email address."),
@@ -26,7 +27,7 @@ export default function verifyOtp() {
             return;
         }
         try {
-            const result = await fetch("/api/auth/verify-otp", {
+            const result = await fetch(`${API_URL}/auth/verify-otp`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({

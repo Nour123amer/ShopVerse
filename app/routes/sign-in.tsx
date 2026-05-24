@@ -6,7 +6,7 @@ import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label'
 import * as z from "zod";
 import { toast } from 'sonner'
-
+import { API_URL } from "~/lib/api";
 
 const loginValidation = z.object({
     email: z.string().email("Invalid email address."),
@@ -41,7 +41,7 @@ export default function Signin() {
         }
 
         try {
-            const res = await fetch("api/auth/login", {
+            const res = await fetch(`${API_URL}/auth/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({

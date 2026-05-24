@@ -5,6 +5,7 @@ import { Checkbox } from '~/components/ui/checkbox'
 import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label'
 import * as z from "zod";
+import { API_URL } from '~/lib/api'
 
 const signupValidation = z.object({
     firstName: z.string().regex(/^[A-Z]/, "Must start with capital letter").min(3, "must be at least 3 characters and start with Capital letter"),
@@ -36,7 +37,7 @@ export default function Signup() {
 
 
     const handleVerifyOTP = async () => {
-        const res = await fetch("/api/auth/send-otp", {
+        const res = await fetch(`${API_URL}/auth/send-otp`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -67,7 +68,7 @@ export default function Signup() {
         }
 
         try {
-            const res = await fetch("/api/auth/register", {
+            const res = await fetch(`${API_URL}/auth/register`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({

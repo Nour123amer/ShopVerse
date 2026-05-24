@@ -4,6 +4,7 @@ import { Button } from '~/components/ui/button'
 import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
 import * as z from "zod";
+import { API_URL } from "~/lib/api";
 
 const resetPassValidation = z.object({
     newPass: z.string().min(6, "Password is incorrect!")
@@ -25,7 +26,7 @@ export default function ResetPassword() {
             return;
         }
         try {
-            const result = await fetch("/api/auth/reset-password", {
+            const result = await fetch(`${API_URL}/auth/reset-password`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
