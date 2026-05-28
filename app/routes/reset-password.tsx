@@ -5,6 +5,7 @@ import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
 import * as z from "zod";
 import { API_URL } from "~/lib/api";
+import { toast } from 'sonner';
 
 const resetPassValidation = z.object({
     newPass: z.string().min(6, "Password is incorrect!")
@@ -37,6 +38,9 @@ export default function ResetPassword() {
 
             const data = await result.json();
             console.log("reset pass =>", data)
+            if(result.ok){
+                toast.success("password is changed successfully!")
+            }
 
         } catch (error) {
             console.log(error)
@@ -58,11 +62,12 @@ export default function ResetPassword() {
                         onSubmit={handleResetPassword}
                         className='w-full lg:w-1/2 mx-auto flex flex-col justify-center my-8 bg-white     rounded-lg p-6'>
                         <div>
-                            <Label className='mb-2 text-[#45474C]'>New Password</Label>
+                            <Label htmlFor='password' className='mb-2 text-[#45474C]'>New Password</Label>
                             <Input
+                            id='password'
                                 value={newPass}
                                 onChange={(e) => { setNewPass(e.target.value) }}
-                                className='mb-3 bg-white text-[#C5C6CD]' name="email" type='email' placeholder="Alex@gmail.com" />
+                                className='mb-3 bg-white text-[#C5C6CD]' name="password" type='password' placeholder="********" />
                             {errors.newPass && (
                                 <p className="text-red-500 text-sm">
                                     {errors.newPass[0]}

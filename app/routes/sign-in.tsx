@@ -4,16 +4,9 @@ import { Button } from '~/components/ui/button'
 import { Checkbox } from '~/components/ui/checkbox'
 import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label'
-import * as z from "zod";
 import { toast } from 'sonner'
-import { API_URL } from "~/lib/api";
+import { loginUser, loginValidation, type SigninData } from '~/services/signin.services'
 
-const loginValidation = z.object({
-    email: z.string().email("Invalid email address."),
-    password: z.string().min(6, "Password is incorrect!"),
-})
-
-type SigninData = z.infer<typeof loginValidation>;
 
 export default function Signin() {
     const navigate = useNavigate()
@@ -41,26 +34,30 @@ export default function Signin() {
         }
 
         try {
-            const res = await fetch(`${API_URL}/auth/login`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    "identifierType": "email",
-                    identifier: formData.email,
-                    countryCode: "EG",
-                    password: formData.password
-                })
+            const res = await loginUser({
+                email:formData.email,
+                password:formData.password
             });
-            const data = await res.json();
+            
             if (res?.ok) {
                 console.log("success login");
+                console.log(res)
                 toast.success("user logged in successfully!");
-                localStorage.setItem("token",data.data.tokens.accessToken)
+                const token =  res?.data?.data?.tokens?.accessToken
+                if(token){
+                localStorage.setItem("token", token)
                 navigate("/shop")
+                }
 
             }
-            if (!res?.ok) console.log(data.message)
-            console.log("login result :", data)
+            if (!res?.ok) {
+                console.log(res.data.message);
+                console.log(res)
+                const errorMessage = res?.data?.errors?.[0]?.message;
+                if(errorMessage)  toast.error(errorMessage);
+            }
+
+            console.log("login result :", res)
         } catch (error) {
             console.log("error", error)
         } finally {
@@ -69,8 +66,6 @@ export default function Signin() {
         }
 
     }
-
-
 
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

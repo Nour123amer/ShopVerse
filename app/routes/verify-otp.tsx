@@ -15,8 +15,6 @@ export default function verifyOtp() {
     const [code, setCode] = useState("");
     const [errors, setErrors] = useState<Record<string, string[]>>({});
 
-
-
     const handleVerifyOTP = async (e: React.FormEvent) => {
         e.preventDefault();
         const validateVerification = verifyValidation.safeParse({ email })

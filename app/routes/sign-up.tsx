@@ -4,37 +4,21 @@ import { Button } from '~/components/ui/button'
 import { Checkbox } from '~/components/ui/checkbox'
 import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label'
-import * as z from "zod";
 import { API_URL } from '~/lib/api'
-
-const signupValidation = z.object({
-    firstName: z.string().regex(/^[A-Z]/, "Must start with capital letter").min(3, "must be at least 3 characters and start with Capital letter"),
-    lastName: z.string().regex(/^[A-Z]/, "Must start with capital letter").min(3, "must be at least 3 characters and start with Capital letter"),
-    phoneNumber: z.string().regex(
-        /^(010|011|012|015)\d{8}$/,
-        "Invalid Egyptian phone number"
-    ),
-    email: z.string().email("Invalid email address."),
-    pass: z.string().min(6, "Password must be at least 6 characters"),
-});
-
-    type SignupData = z.infer<typeof signupValidation>
+import { toast } from 'sonner'
+import { registerUser, signupValidation,type SignupData } from '~/services/signup.service'
 
 export default function Signup() {
     const [formData, setFormData] = useState<SignupData>({
-        firstName:"",
-        lastName:"",
-        phoneNumber:"",
-        email:"",
-        pass:""
+        firstName: "",
+        lastName: "",
+        phoneNumber: "",
+        email: "",
+        password: ""
     })
-    const [isLoading, setIsLoading]= useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
     const [errors, setErrors] = useState<Record<string, string[] | undefined>>({});
-
-
-
-
 
     const handleVerifyOTP = async () => {
         const res = await fetch(`${API_URL}/auth/send-otp`, {
@@ -44,7 +28,7 @@ export default function Signup() {
                 identifierType: "phoneNumber",
                 identifier: formData.phoneNumber,
                 countryCode: "EG",
-                code:"123456"
+                code: "123456"
             })
         });
 
@@ -63,45 +47,37 @@ export default function Signup() {
                 validationResult.error.flatten().fieldErrors
             );
             setIsLoading(false)
-            return
-
-        }
+            return   }
 
         try {
-            const res = await fetch(`${API_URL}/auth/register`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    firstName: formData.firstName,
-                    lastName: formData.lastName,
-                    email: formData.email,
-                    password: formData.pass,
-                    phoneNumber: formData.phoneNumber,
-                    countryCode: "EG",
-                    userType: "USER"
-                })
+            const res = await registerUser({
+                firstName: formData.firstName,
+                lastName: formData.lastName,
+                email: formData.email,
+                password: formData.password,
+                phoneNumber: formData.phoneNumber
             });
+                console.log("res",res)
 
-            const data = await res.json();
-            if (res.ok) {
-                console.log(data);
-                await handleVerifyOTP();
-                navigate("/shop")
+            if (res.success) {
+                toast.success(res.message ||"Account created");
+                navigate('/shop')
 
+            }else{
+                toast.error(res.errors[0].message ||"Something went wrong!")
             }
-            if (!res.ok) console.log(data?.message)
         } catch (error) {
-            console.log("error =>", error)
-        } finally{
+            console.log("error =>", error);
+        } finally {
             setIsLoading(false)
         }
     }
 
-       const handleChange =(e:React.ChangeEvent<HTMLInputElement>)=>{
-        setFormData({...formData,[e.target.name]:e.target.value});
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
 
         setErrors(prev => {
-            const updatedErrors ={...prev};
+            const updatedErrors = { ...prev };
             delete updatedErrors[e.target.name];
             return updatedErrors;
         })
@@ -152,7 +128,7 @@ export default function Signup() {
                     <div>
                         <Label htmlFor="email" className='mb-2 text-[#45474C]'>Email Address</Label>
                         <Input
-                        id="email"
+                            id="email"
                             value={formData.email}
                             onChange={handleChange}
                             className='mb-3 bg-white text-[#C5C6CD]' name="email" type='email' placeholder="Alex@gmail.com" />
@@ -176,17 +152,17 @@ export default function Signup() {
                         )}
                     </div>
                     <div>
-                        <Label htmlFor="pass" className='flex items-center justify-between mb-2 text-[#45474C]'>
+                        <Label htmlFor="password" className='flex items-center justify-between mb-2 text-[#45474C]'>
                             <span>Password</span>
                         </Label>
                         <Input
-                        id='pass'
-                            value={formData.pass}
+                            id='password'
+                            value={formData.password}
                             onChange={handleChange}
-                            className='mb-3 bg-white text-[#C5C6CD] ' name='pass' type='password' placeholder='***********' />
-                        {errors.pass && (
+                            className='mb-3 bg-white text-[#C5C6CD] ' name='password' type='password' placeholder='***********' />
+                        {errors.password && (
                             <p className="text-red-500 text-sm">
-                                {errors.pass[0]}
+                                {errors.password[0]}
                             </p>
                         )}
                     </div>
@@ -196,11 +172,11 @@ export default function Signup() {
                     </div>
 
                     <Button
-                    disabled={isLoading}
+                        disabled={isLoading}
                         type='submit'
                         className='text-white bg-[#182232] cursor-pointer'
                     >
-                       {isLoading ? "Signing up":"Sign up to VerseShop"} </Button>
+                        {isLoading ? "Signing up" : "Sign up to VerseShop"} </Button>
 
                     <p className='text-center my-4'> Have an account?
                         <Link className='text-[#182232]' to="/sign-in"> Sign In</Link></p>
