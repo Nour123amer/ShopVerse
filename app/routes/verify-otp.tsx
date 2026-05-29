@@ -1,91 +1,249 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router';
-import { Button } from '~/components/ui/button';
-import { Input } from '~/components/ui/input'
-import { Label } from '~/components/ui/label';
-import * as z from "zod";
-import { API_URL } from "~/lib/api";
+import React, { useState } from "react";
+import { useNavigate } from "react-router";
+import { toast } from "sonner";
+import SubmitBtn from "~/components/form/SubmitBtn";
+import { Input } from "~/components/ui/input";
+import { verifyOTP, verifyValidation } from "~/services/auth.service";
 
-const verifyValidation = z.object({
-    email: z.string().email("Invalid email address."),
-})
 
-export default function verifyOtp() {
-    const [email, setEmail] = useState("");
-    const [code, setCode] = useState("");
-    const [errors, setErrors] = useState<Record<string, string[]>>({});
 
-    const handleVerifyOTP = async (e: React.FormEvent) => {
-        e.preventDefault();
-        const validateVerification = verifyValidation.safeParse({ email })
-        if (!validateVerification.success) {
-            setErrors(
-                validateVerification.error.flatten().fieldErrors
-            );
-            return;
-        }
-        try {
-            const result = await fetch(`${API_URL}/auth/verify-otp`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    "identifierType": "email",
-                    "identifier": `${email}`,
-                    "countryCode": "EG",
-                    "code": "123456"
-                })
-            });
+export default function VerifyOtp() {
 
-            const data = await result.json();
-            console.log("verify otp result =>", data)
+  const [phoneNumber, setPhoneNumber] =
+    useState("");
+  const navigate = useNavigate()
+  const [errors, setErrors] = useState<
+    Record<string, string[]>
+  >({});
 
-        } catch (error) {
-            console.log("error =>", error)
-        }
+  const [otp, setOtp] = useState([
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+  ]);
+
+  const handleOtpChange = (
+    value: string,
+    index: number
+  ) => {
+
+    if (!/^\d*$/.test(value)) return;
+
+    const newOtp = [...otp];
+
+    newOtp[index] = value.slice(-1);
+
+    setOtp(newOtp);
+
+    // auto focus next input
+    if (value && index < 5) {
+
+      const nextInput =
+        document.getElementById(
+          `otp-${index + 1}`
+        );
+
+      nextInput?.focus();
+    }
+  };
+
+  const handleVerifyOTP = async (
+    e: React.FormEvent
+  ) => {
+
+    e.preventDefault();
+
+    const otpCode = otp.join("");
+
+    const validateVerification =
+      verifyValidation.safeParse({
+        phoneNumber,
+        code: otpCode,
+      });
+
+    if (!validateVerification.success) {
+
+      setErrors(
+        validateVerification.error.flatten()
+          .fieldErrors
+      );
+
+      return;
     }
 
+    try {
 
-    return (
+      const result = await verifyOTP({
+        phoneNumber,
+        code: otpCode,
+      });
 
-        <>
-            <div className='bg-[#f5f5f5] p-6 min-h-screen'>
-                <h2 className='mb-6 text-[#182232] font-bold'>ShopVerse</h2>
+      console.log(
+        "verify otp result =>",
+        result
+      );
 
-                <div className=''>
-                    <h2 className='text-[#182232]'>Welcome Back</h2>
-                    <p className='text-[#45474C]'>Enter your details to access your premium account.</p>
+      if (result.ok) {
+        toast.success("Account is verified");
+        navigate("/sign-in")
+     }
+
+      if (!result.ok) {
+        const errorMessage =
+          result?.data?.errors?.[0]
+            ?.message;
+
+        if (errorMessage) {
+          toast.error(errorMessage);
+        }
+      }
+
+    } catch (error) {
+
+      console.log("error =>", error);
+
+      toast.error(
+        "Something went wrong"
+      );
+    }
+  };
+
+  return (
+
+    <div className="bg-[#f5f5f5] p-6 min-h-screen">
+
+      <h2 className="mb-6 text-[#182232] font-bold">
+        ShopVerse
+      </h2>
+
+      <form
+        onSubmit={handleVerifyOTP}
+        className="
+          w-full
+          lg:w-3/4
+          mx-auto
+          flex
+          flex-col
+          justify-center
+          my-8
+          bg-white
+          rounded-lg
+          p-6
+        "
+      >
+
+        <div className="text-center mb-6">
+
+          <h2 className="text-2xl font-semibold text-[#182232]">
+            Verify OTP
+          </h2>
+
+          <p className="text-[#45474C] mt-2">
+            Enter your phone number
+            and the 6-digit code
+          </p>
+
+        </div>
 
 
-                    <form
-                        onSubmit={handleVerifyOTP}
-                        className='w-full lg:w-1/2 mx-auto flex flex-col justify-center my-8 bg-white     rounded-lg p-6'>
-                        <div>
-                            <Label className='mb-2 text-[#45474C]'>Email Address</Label>
-                            <Input
-                                value={email}
-                                onChange={(e) => { setEmail(e.target.value) }}
-                                className='mb-3 bg-white text-[#C5C6CD]' name="email" type='email' placeholder="Alex@gmail.com" />
-                            {errors.email && (
-                                <p className="text-red-500 text-sm">
-                                    {errors.email[0]}
-                                </p>
-                            )}
+        <div className="mb-5">
 
-                        </div>
+          <Input
+            type="tel"
+            placeholder="01012345678"
+            value={phoneNumber}
+            onChange={(e) =>
+              setPhoneNumber(
+                e.target.value
+              )
+            }
+
+            className="
+              bg-white
+              text-[#182232]
+            "
+          />
+
+          {errors.phoneNumber && (
+            <p className="text-red-500 text-sm mt-2">
+              {errors.phoneNumber[0]}
+            </p>
+          )}
+        </div>
 
 
-                        <Button
-                            type='submit'
-                            className='text-white bg-[#182232] cursor-pointer'
-                        >Verify OTP</Button>
+        <div className="
+          flex
+          items-center
+          justify-center
+          gap-3
+          mb-6
+        ">
 
-                        <p className='text-center my-4'> Don't have an account?
-                            <Link className='text-[#182232]' to="/sign-up"> Create Account</Link></p>
+          {otp.map((digit, index) => (
+
+            <Input
+              key={index}
+
+              id={`otp-${index}`}
+
+              type="text"
+
+              maxLength={1}
+
+              value={digit}
+
+              onChange={(e) =>
+                handleOtpChange(
+                  e.target.value,
+                  index
+                )
+              }
+
+              className="
+                w-12
+                h-12
+                text-center
+                text-lg
+                font-semibold
+                bg-white
+                border
+                border-gray-300
+                rounded-xl
+                focus:border-[#182232]
+              "
+            />
+          ))}
+        </div>
 
 
-                    </form>
-                </div>
-            </div>
-        </>
-    )
+        {errors.code && (
+          <p className="
+            text-red-500
+            text-sm
+            text-center
+            mb-4
+          ">
+            {errors.code[0]}
+          </p>
+        )}
+
+
+        <SubmitBtn
+          type="submit"
+          className="
+            text-white
+            bg-[#182232]
+            cursor-pointer
+          "
+        >
+          Verify OTP
+        </SubmitBtn>
+
+      </form>
+    </div>
+  );
 }

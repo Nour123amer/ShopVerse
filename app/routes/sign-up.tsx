@@ -1,12 +1,11 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router'
-import { Button } from '~/components/ui/button'
 import { Checkbox } from '~/components/ui/checkbox'
-import { Input } from '~/components/ui/input'
-import { Label } from '~/components/ui/label'
-import { API_URL } from '~/lib/api'
 import { toast } from 'sonner'
-import { registerUser, signupValidation,type SignupData } from '~/services/signup.service'
+import { registerUser, signupValidation,type SignupData } from '~/services/auth.service'
+import InputField from '~/components/form/InputField'
+import FormLabel from '~/components/form/Label'
+import SubmitBtn from '~/components/form/SubmitBtn'
 
 export default function Signup() {
     const [formData, setFormData] = useState<SignupData>({
@@ -20,21 +19,7 @@ export default function Signup() {
     const navigate = useNavigate();
     const [errors, setErrors] = useState<Record<string, string[] | undefined>>({});
 
-    const handleVerifyOTP = async () => {
-        const res = await fetch(`${API_URL}/auth/send-otp`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                identifierType: "phoneNumber",
-                identifier: formData.phoneNumber,
-                countryCode: "EG",
-                code: "123456"
-            })
-        });
 
-        const data = await res.json();
-        console.log("verify otp result", data)
-    }
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true)
@@ -61,7 +46,7 @@ export default function Signup() {
 
             if (res.success) {
                 toast.success(res.message ||"Account created");
-                navigate('/shop')
+                navigate('/verify-otp')
 
             }else{
                 toast.error(res.errors[0].message ||"Something went wrong!")
@@ -95,11 +80,11 @@ export default function Signup() {
 
                 <form
                     onSubmit={handleRegister}
-                    className='w-full lg:w-1/2 mx-auto flex flex-col justify-center my-8 bg-white     rounded-lg p-6'>
+                    className='w-full lg:w-3/4 mx-auto flex flex-col gap-3 justify-center my-8 bg-white     rounded-lg p-6'>
                     <div className='flex gap-3'>
-                        <div>
-                            <Label htmlFor="firstName" className='mb-2 text-[#45474C]'>First Name</Label>
-                            <Input
+                        <div className='w-1/2'>
+                            <FormLabel htmlFor="firstName" className='mb-2 text-[#45474C]'>First Name</FormLabel>
+                            <InputField
                                 id="firstName"
                                 value={formData.firstName}
                                 onChange={handleChange}
@@ -110,9 +95,9 @@ export default function Signup() {
                                 </p>
                             )}
                         </div>
-                        <div>
-                            <Label htmlFor="lastName" className='mb-2 text-[#45474C]'>Last Name</Label>
-                            <Input
+                        <div className='w-1/2'>
+                            <FormLabel htmlFor="lastName" className='mb-2 text-[#45474C]'>Last Name</FormLabel>
+                            <InputField
                                 id="lastName"
                                 value={formData.lastName}
                                 onChange={handleChange}
@@ -126,8 +111,8 @@ export default function Signup() {
                     </div>
 
                     <div>
-                        <Label htmlFor="email" className='mb-2 text-[#45474C]'>Email Address</Label>
-                        <Input
+                        <FormLabel htmlFor="email" className='mb-2 text-[#45474C]'>Email Address</FormLabel>
+                        <InputField
                             id="email"
                             value={formData.email}
                             onChange={handleChange}
@@ -139,10 +124,11 @@ export default function Signup() {
                         )}
                     </div>
                     <div>
-                        <Label htmlFor="phoneNumber" className='mb-2 text-[#45474C]'>Phone Number</Label>
-                        <Input
+                        <FormLabel htmlFor="phoneNumber" className='mb-2 text-[#45474C]'>Phone Number</FormLabel>
+                        <InputField
                             id="phoneNumber"
                             value={formData.phoneNumber}
+                            placeholder='phone number'
                             onChange={handleChange}
                             className='mb-3 bg-white text-[#C5C6CD]' name="phoneNumber" type='tel' />
                         {errors.phoneNumber && (
@@ -152,10 +138,10 @@ export default function Signup() {
                         )}
                     </div>
                     <div>
-                        <Label htmlFor="password" className='flex items-center justify-between mb-2 text-[#45474C]'>
+                        <FormLabel htmlFor="password" className='flex items-center justify-between mb-2 text-[#45474C]'>
                             <span>Password</span>
-                        </Label>
-                        <Input
+                        </FormLabel>
+                        <InputField
                             id='password'
                             value={formData.password}
                             onChange={handleChange}
@@ -166,20 +152,20 @@ export default function Signup() {
                             </p>
                         )}
                     </div>
-                    <div className='flex items-center gap-2 my-3'>
+                    <div className='flex items-center gap-2 mt-2'>
                         <Checkbox className=' bg-white cursor-pointer' />
                         <span>Keep me logged in</span>
                     </div>
 
-                    <Button
+                    <SubmitBtn
                         disabled={isLoading}
                         type='submit'
                         className='text-white bg-[#182232] cursor-pointer'
                     >
-                        {isLoading ? "Signing up" : "Sign up to VerseShop"} </Button>
+                        {isLoading ? "Signing up..." : "Sign up to VerseShop"} </SubmitBtn>
 
-                    <p className='text-center my-4'> Have an account?
-                        <Link className='text-[#182232]' to="/sign-in"> Sign In</Link></p>
+                    <p className='text-center text-sm'> Have an account?
+                        <Link className='text-[#324566]' to="/sign-in"> Sign In</Link></p>
 
 
                 </form>

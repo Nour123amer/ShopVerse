@@ -2,10 +2,11 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { Button } from '~/components/ui/button'
 import { Checkbox } from '~/components/ui/checkbox'
-import { Input } from '~/components/ui/input'
-import { Label } from '~/components/ui/label'
 import { toast } from 'sonner'
-import { loginUser, loginValidation, type SigninData } from '~/services/signin.services'
+import SubmitBtn from '~/components/form/SubmitBtn'
+import FormLabel from '~/components/form/Label'
+import InputField from '~/components/form/InputField'
+import { loginUser, loginValidation, type SigninData } from '~/services/auth.service'
 
 
 export default function Signin() {
@@ -16,7 +17,6 @@ export default function Signin() {
     })
     const [isLoading, setIsLoading] = useState(false)
     const [errors, setErrors] = useState<Record<string, string[] | undefined>>({});
-
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -104,10 +104,10 @@ export default function Signin() {
 
                     <form
                         onSubmit={handleSubmit}
-                        className='w-full lg:w-1/2 mx-auto flex flex-col justify-center my-8 bg-white     rounded-lg p-6'>
+                        className='w-full lg:w-3/4 mx-auto flex flex-col gap-3 justify-center my-8 bg-white     rounded-lg p-6'>
                         <div>
-                            <Label htmlFor="email" className='mb-2 text-[#45474C]'>Email Address</Label>
-                            <Input
+                            <FormLabel htmlFor="email" className='mb-2 text-[#45474C]'>Email Address</FormLabel>
+                            <InputField
                                 id='email'
                                 value={formData.email}
                                 onChange={handleChange}
@@ -119,12 +119,12 @@ export default function Signin() {
                             )}
                         </div>
                         <div>
-                            <Label htmlFor="password" className='flex items-center justify-between mb-2 text-[#45474C]'>
+                            <FormLabel htmlFor="password" className='flex items-center justify-between mb-2 text-[#45474C]'>
                                 <span>Password</span>
                                 <span className='cursor-pointer'>
                                     <Link to="/reset-password">Forgot?</Link> </span>
-                            </Label>
-                            <Input
+                            </FormLabel>
+                            <InputField
                                 id='password'
                                 value={formData.password}
                                 onChange={handleChange}
@@ -135,21 +135,21 @@ export default function Signin() {
                                 </p>
                             )}
                         </div>
-                        <div className='flex items-center gap-2 my-3'>
+                        <div className='flex items-center gap-2 mt-2'>
                             <Checkbox className=' bg-white cursor-pointer' />
                             <span>Keep me logged in</span>
                         </div>
 
-                        <Button
+                        <SubmitBtn
                             disabled={isLoading}
                             type='submit'
                             className='text-white bg-[#182232] cursor-pointer'
                         >
 
-                            {isLoading ? "Signing in..." : "Sign in to VerseShop"} </Button>
+                            {isLoading ? "Signing in..." : "Sign in to VerseShop"} </SubmitBtn>
 
-                        <p className='text-center my-4'> Don't have an account?
-                            <Link className='text-[#182232]' to="/sign-up"> Create Account</Link></p>
+                        <p className='text-center text-sm '> Don't have an account?
+                            <Link className='text-[#324566]' to="/sign-up"> Create Account</Link></p>
 
 
                     </form>

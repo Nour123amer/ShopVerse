@@ -22,7 +22,7 @@ export default function AuthLayout() {
                     <Outlet />
                 </div>
                 <Toaster
-                 position={'top-right'} duration={4000} />
+                 position={'top-right'} duration={4000} richColors />
 
             </div>
         </>
