@@ -2,10 +2,17 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { Checkbox } from '~/components/ui/checkbox'
 import { toast } from 'sonner'
-import { registerUser, signupValidation,type SignupData } from '~/services/auth.service'
+import { registerUser, signupValidation, type SignupData } from '~/services/auth.service'
 import InputField from '~/components/form/InputField'
 import FormLabel from '~/components/form/Label'
 import SubmitBtn from '~/components/form/SubmitBtn'
+import { PhoneInput } from "react-international-phone";
+import "react-international-phone/style.css";
+
+type ApiError = {
+    field: string;
+    message: string;
+};
 
 export default function Signup() {
     const [formData, setFormData] = useState<SignupData>({
@@ -14,7 +21,7 @@ export default function Signup() {
         phoneNumber: "",
         email: "",
         password: ""
-    })
+    });
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
     const [errors, setErrors] = useState<Record<string, string[] | undefined>>({});
@@ -32,7 +39,8 @@ export default function Signup() {
                 validationResult.error.flatten().fieldErrors
             );
             setIsLoading(false)
-            return   }
+            return
+        }
 
         try {
             const res = await registerUser({
@@ -42,14 +50,22 @@ export default function Signup() {
                 password: formData.password,
                 phoneNumber: formData.phoneNumber
             });
-                console.log("res",res)
+            console.log("res", res)
 
             if (res.success) {
-                toast.success(res.message ||"Account created");
+                toast.success(res.message || "Account created");
+                localStorage.setItem("phoneNumber", res?.data.phoneNumber)
                 navigate('/verify-otp')
 
-            }else{
-                toast.error(res.errors[0].message ||"Something went wrong!")
+            } else {
+                const apiErrors: Record<string, string[]> = {};
+
+                res.errors?.forEach((err: ApiError) => {
+                    apiErrors[err.field] = [err.message];
+                });
+
+                setErrors(apiErrors);
+                toast.error(res.errors[0].message || "Something went wrong!")
             }
         } catch (error) {
             console.log("error =>", error);
@@ -68,11 +84,12 @@ export default function Signup() {
         })
     }
 
-
+    console.log("errors", errors)
 
     return (
         <div className='bg-[#f5f5f5] p-6 min-h-screen'>
-            <h2 className='mb-6 text-[#182232] font-bold'>ShopVerse</h2>
+            <h2 className='mb-6 text-[#182232] font-bold'>
+                <Link to="/">ShopVerse</Link> </h2>
 
             <div className=''>
                 <h2 className='text-[#182232]'>Welcome Back</h2>
@@ -80,7 +97,7 @@ export default function Signup() {
 
                 <form
                     onSubmit={handleRegister}
-                    className='w-full lg:w-3/4 mx-auto flex flex-col gap-3 justify-center my-8 bg-white     rounded-lg p-6'>
+                    className='w-full lg:w-3/4 mx-auto flex flex-col gap-4 justify-center my-8 bg-white     rounded-lg p-6'>
                     <div className='flex gap-3'>
                         <div className='w-1/2'>
                             <FormLabel htmlFor="firstName" className='mb-2 text-[#45474C]'>First Name</FormLabel>
@@ -123,20 +140,45 @@ export default function Signup() {
                             </p>
                         )}
                     </div>
-                    <div>
-                        <FormLabel htmlFor="phoneNumber" className='mb-2 text-[#45474C]'>Phone Number</FormLabel>
-                        <InputField
-                            id="phoneNumber"
-                            value={formData.phoneNumber}
-                            placeholder='phone number'
-                            onChange={handleChange}
-                            className='mb-3 bg-white text-[#C5C6CD]' name="phoneNumber" type='tel' />
-                        {errors.phoneNumber && (
-                            <p className="text-red-500 text-sm">
-                                {errors.phoneNumber[0]}
-                            </p>
-                        )}
+
+                    <div className=''>
+                        <FormLabel htmlFor="phoneNumber" className='text-[#45474C] mb-2'>Phone Number</FormLabel>
+                            <PhoneInput
+                                value={formData.phoneNumber}
+                                defaultCountry="eg"
+                                onChange={(phone:string)=> 
+                                    setFormData((prev)=>({
+                                        ...prev,
+                                        phoneNumber:phone||""
+                                    }))
+                                }
+                            //     inputClassName="
+                            //     w-full
+                            //     h-8
+                            //     px-1
+                            //     bg-white
+                            //     border
+                            //     border-gray-200
+                            //     focus:outline-none
+                            //     focus:ring-2
+                            //     focus:ring-[#e1e1e1]
+                            // " 
+                            className="w-full"
+  inputClassName="
+    h-10
+    border-gray-200
+  "
+  countrySelectorStyleProps={{
+    buttonClassName: "border-gray-200"
+  }}
+                            />
+                         {errors.phoneNumber && (
+                                <p className="text-red-500 text-sm">
+                                    {errors.phoneNumber[0]}
+                                </p>
+                            )}
                     </div>
+
                     <div>
                         <FormLabel htmlFor="password" className='flex items-center justify-between mb-2 text-[#45474C]'>
                             <span>Password</span>

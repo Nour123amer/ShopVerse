@@ -7,6 +7,7 @@ type InputFeatures={
     id:string,
     value:string,
     className:string,
+    defaultCountry?:string,
     onChange:(e:React.ChangeEvent<HTMLInputElement>)=>void
 }
 

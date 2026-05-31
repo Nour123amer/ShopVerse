@@ -5,8 +5,11 @@ import ItemDetails from '~/components/new-arrivals/ItemDetails'
 export default function NewArrivals() {
   return (
     <>
-    <BreadCrumbs />
+    <div className='px-4 md:px-8'>
+       <BreadCrumbs />
     <ItemDetails />
+    </div>
+   
     </>
   )
 }

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router";
 import { toast } from "sonner";
 import SubmitBtn from "~/components/form/SubmitBtn";
 import { Input } from "~/components/ui/input";
@@ -10,7 +10,7 @@ import { verifyOTP, verifyValidation } from "~/services/auth.service";
 export default function VerifyOtp() {
 
   const [phoneNumber, setPhoneNumber] =
-    useState("");
+    useState<string>("");
   const navigate = useNavigate()
   const [errors, setErrors] = useState<
     Record<string, string[]>
@@ -24,6 +24,14 @@ export default function VerifyOtp() {
     "",
     "",
   ]);
+
+  useEffect(()=>{
+    const storedNumber = localStorage.getItem("phoneNumber");
+    if(storedNumber?.startsWith("+20")){
+      setPhoneNumber(storedNumber.slice(2))
+    }
+    
+  },[phoneNumber])
 
   const handleOtpChange = (
     value: string,
@@ -110,13 +118,13 @@ export default function VerifyOtp() {
       );
     }
   };
-
+ console.log(errors)
   return (
 
     <div className="bg-[#f5f5f5] p-6 min-h-screen">
 
       <h2 className="mb-6 text-[#182232] font-bold">
-        ShopVerse
+        <Link to="/">ShopVerse</Link>
       </h2>
 
       <form
@@ -155,12 +163,7 @@ export default function VerifyOtp() {
             type="tel"
             placeholder="01012345678"
             value={phoneNumber}
-            onChange={(e) =>
-              setPhoneNumber(
-                e.target.value
-              )
-            }
-
+            onChange={(e)=>{setPhoneNumber(e.target.value)}}
             className="
               bg-white
               text-[#182232]

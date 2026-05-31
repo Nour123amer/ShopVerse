@@ -35,26 +35,33 @@ export default function Signin() {
 
         try {
             const res = await loginUser({
-                email:formData.email,
-                password:formData.password
+                email: formData.email,
+                password: formData.password
             });
-            
+
             if (res?.ok) {
                 console.log("success login");
                 console.log(res)
                 toast.success("user logged in successfully!");
-                const token =  res?.data?.data?.tokens?.accessToken
-                if(token){
-                localStorage.setItem("token", token)
-                navigate("/shop")
+                const token = res?.data?.data?.tokens?.accessToken
+                if (token) {
+                    localStorage.setItem("token", token)
+                    navigate("/shop")
                 }
 
             }
-            if (!res?.ok) {
+            if (res?.data?.errors) {
                 console.log(res.data.message);
                 console.log(res)
                 const errorMessage = res?.data?.errors?.[0]?.message;
-                if(errorMessage)  toast.error(errorMessage);
+                console.log("errors:", res?.data?.errors);
+                console.log("message:", res?.data?.errors?.[0]?.message);
+
+                toast.error(errorMessage === "Invalid credentials" ?
+                    "Email or password is incorrect!" : errorMessage ||
+                    "Something went wrong!");
+
+
             }
 
             console.log("login result :", res)
@@ -81,7 +88,8 @@ export default function Signin() {
     return (
         <>
             <div className='bg-[#f5f5f5] p-6 min-h-screen'>
-                <h2 className='mb-6 text-[#182232] font-bold'>ShopVerse</h2>
+                <h2 className='mb-6 text-[#182232] font-bold'>
+                    <Link to="/">ShopVerse</Link> </h2>
 
                 <div className=''>
                     <h2 className='text-[#182232]'>Welcome Back</h2>
