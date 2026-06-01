@@ -171,7 +171,7 @@ export async function forgotPassword(data: PasswordForgot) {
     const res = await fetch(`${API_URL}/auth/forgot-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body:JSON.stringify({
+        body: JSON.stringify({
             identifierType: data.identifierType,
             identifier: data.identifier,
             countryCode: data.countryCode
@@ -179,5 +179,16 @@ export async function forgotPassword(data: PasswordForgot) {
 
     });
 
+    return res;
+}
+
+// get me
+export async function getMe() {
+    const res = await fetch(`${API_URL}/auth/me`, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+    })
     return res;
 }

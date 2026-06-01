@@ -1,4 +1,32 @@
+import { useEffect, useState } from "react";
+import { getMe } from "~/services/auth.service";
+
+type UserData = {
+  data: {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: string;
+  }
+}
 export default function AccountSettings() {
+  const [userData, setUserData] = useState<UserData | null>(null);
+
+
+   useEffect( () =>{
+    const fetchUser = async () =>{
+       const userInfo = await getMe();
+      const res = await userInfo.json();
+      console.log("user data =>", userInfo);
+      console.log("result =>", res)
+      setUserData(res)
+    }
+    
+    fetchUser()
+   },[])
+   
+   
+
   return (
     <div className="bg-[#fcfcfc] min-h-screen rounded-2xl px-4 py-12 sm:px-6 lg:px-8 max-w-7xl  mx-auto font-sans antialiased text-[#1a1a1a] space-y-8">
       
@@ -22,7 +50,7 @@ export default function AccountSettings() {
         <div className="p-6 flex flex-col md:flex-row gap-8 items-start">
           <div className="relative flex-shrink-0 mx-auto md:mx-0">
             <div className="w-24 h-24 rounded-2xl overflow-hidden bg-gray-100">
-              <img src="/path-to-avatar.jpg" alt="Profile" className="w-full h-full object-cover" />
+              <img src="/avatar.jpg" alt="Profile" className="w-full h-full object-cover" />
             </div>
             <button className="absolute -bottom-2 -right-2 w-7 h-7 bg-[#202938] hover:bg-gray-800 text-white rounded-full flex items-center justify-center shadow-md border-2 border-white transition-colors">
               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -35,15 +63,15 @@ export default function AccountSettings() {
           <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
             <div className="space-y-1.5">
               <label className="text-[11px] font-bold text-gray-500">Full Name</label>
-              <input type="text" defaultValue="Julian Thorne" className="w-full border border-gray-200 rounded-xl px-3 py-2 text-xs bg-gray-50/50 focus:outline-none focus:border-gray-400" />
+              <input type="text" defaultValue={userData?.data?.firstName} className="w-full border border-gray-200 rounded-xl px-3 py-2 text-xs bg-gray-50/50 focus:outline-none focus:border-gray-400" />
             </div>
             <div className="space-y-1.5">
               <label className="text-[11px] font-bold text-gray-500">Email Address</label>
-              <input type="email" defaultValue="julian.t@luxe.com" className="w-full border border-gray-200 rounded-xl px-3 py-2 text-xs bg-gray-50/50 focus:outline-none focus:border-gray-400" />
+              <input type="email" defaultValue={userData?.data?.email} className="w-full border border-gray-200 rounded-xl px-3 py-2 text-xs bg-gray-50/50 focus:outline-none focus:border-gray-400" />
             </div>
             <div className="space-y-1.5">
               <label className="text-[11px] font-bold text-gray-500">Phone Number</label>
-              <input type="text" defaultValue="+1 (555) 000-1234" className="w-full border border-gray-200 rounded-xl px-3 py-2 text-xs bg-gray-50/50 focus:outline-none focus:border-gray-400" />
+              <input type="text" defaultValue={userData?.data?.phoneNumber} className="w-full border border-gray-200 rounded-xl px-3 py-2 text-xs bg-gray-50/50 focus:outline-none focus:border-gray-400" />
             </div>
             <div className="space-y-1.5">
               <label className="text-[11px] font-bold text-gray-500">Location</label>
@@ -163,7 +191,8 @@ export default function AccountSettings() {
           <button className="flex-1 sm:flex-none border border-gray-200 bg-white hover:bg-gray-50 text-xs font-semibold px-5 py-2.5 rounded-xl shadow-sm transition-colors">
             Discard
           </button>
-          <button className="flex-1 sm:flex-none bg-[#202938] hover:bg-[#2b364a] text-white text-xs font-semibold px-5 py-2.5 rounded-xl shadow-sm transition-colors">
+          <button
+          className="flex-1 sm:flex-none bg-[#202938] hover:bg-[#2b364a] text-white text-xs font-semibold px-5 py-2.5 rounded-xl shadow-sm transition-colors">
             Save Changes
           </button>
         </div>
