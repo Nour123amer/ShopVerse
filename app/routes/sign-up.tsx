@@ -32,7 +32,7 @@ export default function Signup() {
         setIsLoading(true)
         const validationResult = signupValidation.safeParse(
             formData,
-        );
+    );
 
         if (!validationResult.success) {
             setErrors(
@@ -55,6 +55,7 @@ export default function Signup() {
             if (res.success) {
                 toast.success(res.message || "Account created");
                 localStorage.setItem("phoneNumber", res?.data.phoneNumber)
+                localStorage.setItem("email",res?.data?.email)
                 navigate('/verify-otp')
 
             } else {

@@ -1,49 +1,57 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router'
-import { Button } from '~/components/ui/button'
+import React, { useEffect, useState } from 'react'
+import { Link, useNavigate } from 'react-router'
 import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
-import * as z from "zod";
-import { API_URL } from "~/lib/api";
 import { toast } from 'sonner';
+import resetPassword, { resetPassValidation } from '~/services/auth.service';
+import SubmitBtn from '~/components/form/SubmitBtn';
 
-const resetPassValidation = z.object({
-    newPass: z.string().min(6, "Password is incorrect!")
-})
 
 export default function ResetPassword() {
     const [newPass, setNewPass] = useState("");
     const [errors, setErrors] = useState<Record<string, string[]>>({});
+    // const [token, setToken] = useState<string >("")
+    const navigate = useNavigate();
+
+
+    // useEffect(()=>{
+    //        const storedToken = localStorage.getItem("token") ||"";
+    //         setToken(storedToken)
+    // },[])
 
 
     const handleResetPassword = async (e: React.FormEvent) => {
+        console.log("FORM SUBMIT FIRED");
         e.preventDefault();
+           const storedToken = localStorage.getItem("token") ||"";
 
-        const resetvalidationResult = resetPassValidation.safeParse(newPass)
+        const resetvalidationResult = resetPassValidation.safeParse({newPass})
         if (!resetvalidationResult.success) {
+              console.log(resetvalidationResult.error.flatten());
+
             setErrors(
                 resetvalidationResult.error.flatten().fieldErrors
             );
             return;
         }
         try {
-            const result = await fetch(`${API_URL}/auth/reset-password`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    token: "4f1d2f7cf6f6a6c23db1d7210c8f40f2d9dbe8f4ad44f1f71e6e9b6b9ad6af8e",
-                    newPassword: `${newPass}`
-                })
-            });
-
-            const data = await result.json();
-            console.log("reset pass =>", data)
-            if(result.ok){
-                toast.success("password is changed successfully!")
+           const res = await resetPassword({
+            token: storedToken,
+            newPassword: newPass
+           })
+            if(res.ok){
+                setTimeout(() => {
+                    navigate("/sign-in") 
+                }, 4000);
+              toast.success("password is changed successfully!")
+            }else{
+                console.log(res)
             }
+            console.log( "result",res)
 
         } catch (error) {
             console.log(error)
+            toast.error("Something went wrong!")
         }
     }
 
@@ -79,10 +87,10 @@ export default function ResetPassword() {
 
 
 
-                        <Button
+                        <SubmitBtn
                             type='submit'
                             className='text-white bg-[#182232] cursor-pointer'
-                        >Reset Password</Button>
+                        >Reset Password</SubmitBtn>
 
                         <p className='text-center my-4'> Don't have an account?
                             <Link className='text-[#182232]' to="/sign-up"> Create Account</Link></p>

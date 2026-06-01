@@ -7,10 +7,10 @@ export const signupValidation = z.object({
     firstName: z.string().trim().regex(/^[A-Z]/, "Must start with capital letter").min(3, "must be at least 3 characters and start with Capital letter"),
     lastName: z.string().trim().regex(/^[A-Z]/, "Must start with capital letter").min(3, "must be at least 3 characters and start with Capital letter"),
     phoneNumber: z.string().regex(
-  /^\+20(10|11|12|15)\d{8}$/,
-  "Invalid Egyptian phone number"
-),
-  email: z.string().trim().email("Invalid email address."),
+        /^\+20(10|11|12|15)\d{8}$/,
+        "Invalid Egyptian phone number"
+    ),
+    email: z.string().trim().email("Invalid email address."),
     password: z.string().trim().min(6, "Password must be at least 6 characters"),
 });
 
@@ -32,7 +32,7 @@ export async function registerUser(data: SignupData) {
 
         const result = await res.json();
         return result;
-        
+
     } catch (error) {
         console.log("error =>", error);
         return error
@@ -89,45 +89,95 @@ export async function loginUser(data: SigninData): Promise<LoginResponse> {
 
 export const verifyValidation = z.object({
     phoneNumber: z.string().trim().regex(
-            /^(010|011|012|015)\d{8}$/,
-            "Invalid Egyptian phone number"
-        ),
-  code: z
-    .string()
-    .length(6, "OTP must be 6 digits"),
+        /^(010|011|012|015)\d{8}$/,
+        "Invalid Egyptian phone number"
+    ),
+    code: z
+        .string()
+        .length(6, "OTP must be 6 digits"),
 })
 
 export type VerifyOTP = z.infer<typeof verifyValidation>
 type VerifyOTPResponse = {
     ok: boolean;
-    data:{
-        success?:string;
-        message?:string;
-        errors?:{
-            message:string;
+    data: {
+        success?: string;
+        message?: string;
+        errors?: {
+            message: string;
         }[]
     }
 }
 
-export async function verifyOTP (data:VerifyOTP):Promise<VerifyOTPResponse>{
+export async function verifyOTP(data: VerifyOTP): Promise<VerifyOTPResponse> {
 
- const res = await fetch(`${API_URL}/auth/verify-otp`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    identifierType: "phoneNumber",
-                    identifier: data.phoneNumber,
-                    countryCode: "EG",
-                    code: data.code
-                })
-            });
+    const res = await fetch(`${API_URL}/auth/verify-otp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            identifierType: "phoneNumber",
+            identifier: data.phoneNumber,
+            countryCode: "EG",
+            code: data.code
+        })
+    });
 
-            const result = await res.json();
-            return {
-                ok:res.ok,
-                data: result
-            }
+    const result = await res.json();
+    return {
+        ok: res.ok,
+        data: result
+    }
 }
 
-  
 
+
+// reset password
+export const resetPassValidation = z.object({
+    newPass: z.string().min(6, "Password is incorrect!")
+})
+
+
+type PasswordReset = {
+    token: string,
+    newPassword: string
+}
+
+export default async function resetPassword(data: PasswordReset) {
+    const res = await fetch(`${API_URL}/auth/reset-password`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${data.token}`
+        },
+        body: JSON.stringify({
+            // token: data.token,
+            newPassword: data.newPassword
+        })
+    });
+    console.log("TOKEN:", data.token);
+    console.log("PASSWORD:", data.newPassword);
+    return res
+
+
+}
+
+type PasswordForgot = {
+    identifierType: string,
+    identifier: string,
+    countryCode: string
+}
+
+export async function forgotPassword(data: PasswordForgot) {
+    const res = await fetch(`${API_URL}/auth/forgot-password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body:JSON.stringify({
+            identifierType: data.identifierType,
+            identifier: data.identifier,
+            countryCode: data.countryCode
+        })
+
+    });
+
+    return res;
+}
