@@ -8,7 +8,17 @@ import FormLabel from '~/components/form/Label'
 import InputField from '~/components/form/InputField'
 import { forgotPassword, loginUser, loginValidation, type SigninData } from '~/services/auth.service'
 
+type ForgotPassResponse = {
+  success: boolean;
+  message: string;
+  data?: {
+   token: string;
+   resetLink: string;
+   statusCode: number;
+   timeStamp?: string;
+  }
 
+}
 export default function Signin() {
     const navigate = useNavigate()
     const [formData, setFormData] = useState<SigninData>({
@@ -78,12 +88,23 @@ export default function Signin() {
         const result = await forgotPassword({
             
                 identifierType: "email",
-                identifier: formData.email,
+                identifier: localStorage.getItem("email") || "",
                 countryCode: "EG"
             
         })
+        const res: ForgotPassResponse = await result.json();
 
-        console.log("forgot pass result",result)
+        console.log("forgot pass result",res)
+        if(result?.ok){
+            console.log("forgot password success =>", res);
+            if(res?.data?.token) localStorage.setItem("resetToken", res?.data?.token)
+            toast.success(res?.message || "Reset password sent to your email!")
+            navigate("/reset-password")
+        }
+        else {         
+               console.log("forgot password failed =>", result);
+            toast.error(res?.message || "Failed to send Reset password. Please try again.")
+        }
 }
 
 const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

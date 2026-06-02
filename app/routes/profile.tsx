@@ -48,7 +48,7 @@ export default function AccountSettings() {
         </div>
         
         <div className="p-6 flex flex-col md:flex-row gap-8 items-start">
-          <div className="relative flex-shrink-0 mx-auto md:mx-0">
+          <div className="relative shrink-0 mx-auto md:mx-0">
             <div className="w-24 h-24 rounded-2xl overflow-hidden bg-gray-100">
               <img src="/avatar.jpg" alt="Profile" className="w-full h-full object-cover" />
             </div>

@@ -150,7 +150,7 @@ export default async function resetPassword(data: PasswordReset) {
             Authorization: `Bearer ${data.token}`
         },
         body: JSON.stringify({
-            // token: data.token,
+            token: data.token,
             newPassword: data.newPassword
         })
     });

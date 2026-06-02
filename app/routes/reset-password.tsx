@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
@@ -10,20 +10,12 @@ import SubmitBtn from '~/components/form/SubmitBtn';
 export default function ResetPassword() {
     const [newPass, setNewPass] = useState("");
     const [errors, setErrors] = useState<Record<string, string[]>>({});
-    // const [token, setToken] = useState<string >("")
     const navigate = useNavigate();
-
-
-    // useEffect(()=>{
-    //        const storedToken = localStorage.getItem("token") ||"";
-    //         setToken(storedToken)
-    // },[])
-
 
     const handleResetPassword = async (e: React.FormEvent) => {
         console.log("FORM SUBMIT FIRED");
         e.preventDefault();
-           const storedToken = localStorage.getItem("token") ||"";
+           const storedToken = localStorage.getItem("resetToken") || "";
 
         const resetvalidationResult = resetPassValidation.safeParse({newPass})
         if (!resetvalidationResult.success) {
@@ -82,10 +74,6 @@ export default function ResetPassword() {
                                 </p>
                             )}
                         </div>
-
-
-
-
 
                         <SubmitBtn
                             type='submit'
