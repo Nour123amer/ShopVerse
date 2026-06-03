@@ -58,6 +58,10 @@ export default function Signin() {
                     localStorage.setItem("token", token)
                     navigate("/shop")
                 }
+                const refreshToken = res?.data?.data?.tokens?.refreshToken;
+                if (refreshToken) {
+                    localStorage.setItem("refreshToken", refreshToken)
+                }
 
             }
             if (res?.data?.errors) {

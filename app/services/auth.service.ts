@@ -192,3 +192,27 @@ export async function getMe() {
     })
     return res;
 }
+
+
+// refresh token
+
+type TokenRefresh ={
+    refreshToken:string
+}
+
+export async function refreshToken(data:TokenRefresh) {
+    const res = await fetch(`${API_URL}/auth/refresh`, {
+     method: "POST",
+     headers: {
+         "Content-Type": "application/json",
+         "authorization": `Bearer ${localStorage.getItem("token")}`
+     },
+     body: JSON.stringify({
+        refreshToken:data.refreshToken
+     })
+    })
+    return res;
+
+    }
+
+

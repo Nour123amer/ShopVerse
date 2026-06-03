@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router'
 import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
 import { toast } from 'sonner';
-import resetPassword, { resetPassValidation } from '~/services/auth.service';
+import resetPassword, { refreshToken, resetPassValidation } from '~/services/auth.service';
 import SubmitBtn from '~/components/form/SubmitBtn';
 
 
@@ -41,8 +41,18 @@ export default function ResetPassword() {
             }
             console.log( "result",res)
 
+            if (!res.ok) {
+                const storedRefreshToken = localStorage.getItem("refreshToken") || "";
+               const result =  await refreshToken({
+                refreshToken: storedRefreshToken 
+               });
+               const refreshResult = await result.json();
+               console.log("refreshResult",refreshResult)
+
+            }
+
         } catch (error) {
-            console.log(error)
+            console.log("error ==>",error)
             toast.error("Something went wrong!")
         }
     }
