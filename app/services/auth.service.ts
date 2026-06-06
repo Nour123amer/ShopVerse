@@ -48,7 +48,7 @@ export const loginValidation = z.object({
 
 export type SigninData = z.infer<typeof loginValidation>;
 
-type LoginResponse = {
+export type LoginResponse = {
     ok: boolean,
     data: {
         errors?: {
@@ -56,7 +56,8 @@ type LoginResponse = {
         }[],
         data?: {
             tokens: {
-                accessToken: string
+                accessToken: string;
+                refreshToken: string;
             }
         },
         message?: string,
@@ -190,6 +191,7 @@ export async function getMe() {
             Authorization: `Bearer ${localStorage.getItem("token")}`
         }
     })
+    console.log("get me res =>", res)
     return res;
 }
 
@@ -205,7 +207,7 @@ export async function refreshToken(data:TokenRefresh) {
      method: "POST",
      headers: {
          "Content-Type": "application/json",
-         "authorization": `Bearer ${localStorage.getItem("token")}`
+        //  "authorization": `Bearer ${data.refreshToken}`
      },
      body: JSON.stringify({
         refreshToken:data.refreshToken

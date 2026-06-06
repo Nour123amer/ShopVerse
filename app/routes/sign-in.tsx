@@ -6,7 +6,7 @@ import { toast } from 'sonner'
 import SubmitBtn from '~/components/form/SubmitBtn'
 import FormLabel from '~/components/form/Label'
 import InputField from '~/components/form/InputField'
-import { forgotPassword, loginUser, loginValidation, type SigninData } from '~/services/auth.service'
+import { forgotPassword, loginUser, loginValidation, type LoginResponse, type SigninData } from '~/services/auth.service'
 
 type ForgotPassResponse = {
   success: boolean;
@@ -19,6 +19,7 @@ type ForgotPassResponse = {
   }
 
 }
+
 export default function Signin() {
     const navigate = useNavigate()
     const [formData, setFormData] = useState<SigninData>({
@@ -44,7 +45,7 @@ export default function Signin() {
         }
 
         try {
-            const res = await loginUser({
+            const res: LoginResponse = await loginUser({
                 email: formData.email,
                 password: formData.password
             });
@@ -61,6 +62,7 @@ export default function Signin() {
                 const refreshToken = res?.data?.data?.tokens?.refreshToken;
                 if (refreshToken) {
                     localStorage.setItem("refreshToken", refreshToken)
+                    console.log("recent refresh token", refreshToken)
                 }
 
             }

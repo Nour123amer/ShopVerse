@@ -7,6 +7,7 @@ export default function Navbar() {
   const isLoggedIn = false; // Placeholder for authentication state
   const navigte = useNavigate();
   const [accessToken, setAccessToken]= useState<string|null>();
+  const navigate = useNavigate();
 
   useEffect(()=>{
    const token = localStorage.getItem("token");
@@ -127,9 +128,9 @@ export default function Navbar() {
           {/* Mobile Icons */}
           {accessToken ?(
             <div className="flex items-center gap-5 mt-8">
-            <Heart size={20} />
-            <ShoppingBag size={20} />
-            <User size={20} />
+            <Heart onClick={()=>{navigate("/favorite")}} size={20} />
+            <ShoppingBag onClick={()=>{navigate("/cart")}} size={20} />
+            <User onClick={()=>{navigate("/profile")}} size={20} />
           </div>
           ):(
             <button className="w-full mt-8 px-4 py-2 bg-black font-semibold text-white rounded-full text-sm

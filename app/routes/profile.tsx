@@ -1,35 +1,74 @@
 import { useEffect, useState } from "react";
-import { getMe } from "~/services/auth.service";
+import { toast } from "sonner";
+import { API_URL } from "~/lib/api";
+import { getMe, refreshToken } from "~/services/auth.service";
 
 type UserData = {
   data: {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phoneNumber: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phoneNumber: string;
+    id:string;
   }
 }
 export default function AccountSettings() {
   const [userData, setUserData] = useState<UserData | null>(null);
 
 
-   useEffect( () =>{
-    const fetchUser = async () =>{
-       const userInfo = await getMe();
+  useEffect(() => {
+    console.log("Access:", localStorage.getItem("token"));
+    console.log("Refresh:", localStorage.getItem("refreshToken"));
+    const fetchUser = async () => {
+      const userInfo = await getMe();
       const res = await userInfo.json();
       console.log("user data =>", userInfo);
+              console.log("ussser data =>",res.data.id)
+
       console.log("result =>", res)
-      setUserData(res)
+      if (res?.errors?.[0].message === "Invalid or expired token") {
+        const storedRefreshToken = localStorage.getItem("refreshToken") || "";
+        console.log("refresh token", storedRefreshToken);
+        const refreshRes = await refreshToken({
+          refreshToken: storedRefreshToken
+        });
+
+        if (refreshRes.ok) {
+          const refreshResult = await refreshRes.json();
+          localStorage.setItem("token", refreshResult?.data?.token);
+          const newUserInfo = await getMe();
+          const newRes = await newUserInfo.json();
+          console.log("refreshResult", refreshResult)
+          setUserData(newRes)
+          console.log("new result", newRes)
+        }
+      } else {
+        setUserData(res)
+      }
     }
-    
     fetchUser()
-   },[])
-   
-   
+  }, [])
+
+
+  const deleteAccount = async(id:string) => {
+    console.log("user id", userData?.data?.id)
+    const res = await fetch(`${API_URL}/users/${id}`, {
+      method:"DELETE",
+      headers:{
+        Authorization :`Bearer ${localStorage.getItem("token")}`
+      }
+    })
+    if(res.status === 403 || res.status === 401) toast.error("Account deletion failed. Please try again later.")
+
+    console.log("delete result", res)
+
+  }
+
+
 
   return (
     <div className="bg-[#fcfcfc] min-h-screen rounded-2xl px-4 py-12 sm:px-6 lg:px-8 max-w-7xl  mx-auto font-sans antialiased text-[#1a1a1a] space-y-8">
-      
+
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Account Settings</h1>
         <p className="text-xs text-gray-400 mt-1">Manage your profile information, security, and notification preferences.</p>
@@ -46,7 +85,7 @@ export default function AccountSettings() {
             </svg>
           </span>
         </div>
-        
+
         <div className="p-6 flex flex-col md:flex-row gap-8 items-start">
           <div className="relative shrink-0 mx-auto md:mx-0">
             <div className="w-24 h-24 rounded-2xl overflow-hidden bg-gray-100">
@@ -109,7 +148,7 @@ export default function AccountSettings() {
             <div className="space-y-1.5">
               <label className="text-[11px] font-bold text-gray-500">New Password</label>
               <input type="password" placeholder="Enter new password" className="w-full border border-gray-200 rounded-xl px-3 py-2 text-xs bg-gray-50/50 focus:outline-none focus:border-gray-400" />
-              
+
               <div className="space-y-1 pt-1">
                 <div className="flex gap-1">
                   <div className="h-1 flex-1 bg-gray-900 rounded-full"></div>
@@ -179,7 +218,10 @@ export default function AccountSettings() {
       </div>
 
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4 pt-4">
-        <button className="flex items-center  gap-1.5 text-xs font-bold text-red-500 hover:text-red-600 transition-colors">
+        <button
+        
+        onClick={() =>    {if(userData?.data?.id) {deleteAccount(userData?.data?.id)}}}
+        className="flex items-center cursor-pointer p-2 rounded-lg gap-1.5 text-xs font-bold text-red-500 hover:text-red-600 hover:bg-gray-600 hover:text-white transition-colors">
           {/* Trash Icon */}
           <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -192,7 +234,7 @@ export default function AccountSettings() {
             Discard
           </button>
           <button
-          className="flex-1 sm:flex-none bg-[#202938] hover:bg-[#2b364a] text-white text-xs font-semibold px-5 py-2.5 rounded-xl shadow-sm transition-colors">
+            className="flex-1 sm:flex-none bg-[#202938] hover:bg-[#2b364a] text-white text-xs font-semibold px-5 py-2.5 rounded-xl shadow-sm transition-colors">
             Save Changes
           </button>
         </div>
