@@ -49,6 +49,15 @@ export default function Signin() {
                 email: formData.email,
                 password: formData.password
             });
+            console.log(
+  "refresh from login",
+  res?.data?.data?.tokens?.refreshToken
+);
+
+console.log(
+  "refresh in storage",
+  localStorage.getItem("refreshToken")
+);
 
             if (res?.ok) {
                 console.log("success login");
@@ -57,13 +66,15 @@ export default function Signin() {
                 const token = res?.data?.data?.tokens?.accessToken
                 if (token) {
                     localStorage.setItem("token", token)
-                    navigate("/shop")
                 }
                 const refreshToken = res?.data?.data?.tokens?.refreshToken;
                 if (refreshToken) {
                     localStorage.setItem("refreshToken", refreshToken)
                     console.log("recent refresh token", refreshToken)
                 }
+                  console.log("saved refresh token:", localStorage.getItem("refreshToken"));
+
+                  navigate("/shop")
 
             }
             if (res?.data?.errors) {

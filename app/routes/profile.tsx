@@ -9,7 +9,7 @@ type UserData = {
     lastName: string;
     email: string;
     phoneNumber: string;
-    id:string;
+    id: string;
   }
 }
 export default function AccountSettings() {
@@ -20,22 +20,27 @@ export default function AccountSettings() {
     console.log("Access:", localStorage.getItem("token"));
     console.log("Refresh:", localStorage.getItem("refreshToken"));
     const fetchUser = async () => {
+      console.log("token => ", localStorage.getItem("token"));
       const userInfo = await getMe();
       const res = await userInfo.json();
       console.log("user data =>", userInfo);
-              console.log("ussser data =>",res.data.id)
+      console.log("ussser data =>", res?.data?.id)
 
       console.log("result =>", res)
-      if (res?.errors?.[0].message === "Invalid or expired token") {
+      if (!userInfo.ok) {
         const storedRefreshToken = localStorage.getItem("refreshToken") || "";
         console.log("refresh token", storedRefreshToken);
         const refreshRes = await refreshToken({
           refreshToken: storedRefreshToken
         });
 
+        console.log("refresh status", refreshRes.status);
+
+
         if (refreshRes.ok) {
           const refreshResult = await refreshRes.json();
-          localStorage.setItem("token", refreshResult?.data?.token);
+          localStorage.setItem("token", refreshResult?.data?.accessToken);
+          localStorage.setItem("refreshToken", refreshResult?.data?.refreshToken);
           const newUserInfo = await getMe();
           const newRes = await newUserInfo.json();
           console.log("refreshResult", refreshResult)
@@ -47,23 +52,29 @@ export default function AccountSettings() {
       }
     }
     fetchUser()
+    //     const payload = JSON.parse(
+    //   atob(localStorage.getItem("token").split(".")[1])
+    // );
+
+    // console.log("Expires At:", new Date(payload.exp * 1000));
+    // console.log("Now:", new Date());
+
   }, [])
 
 
-  const deleteAccount = async(id:string) => {
+  const deleteAccount = async (id: string) => {
     console.log("user id", userData?.data?.id)
     const res = await fetch(`${API_URL}/users/${id}`, {
-      method:"DELETE",
-      headers:{
-        Authorization :`Bearer ${localStorage.getItem("token")}`
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`
       }
     })
-    if(res.status === 403 || res.status === 401) toast.error("Account deletion failed. Please try again later.")
+    if (res.status === 403 || res.status === 401) toast.error("Account deletion failed. Please try again later.")
 
     console.log("delete result", res)
 
   }
-
 
 
   return (
@@ -219,9 +230,9 @@ export default function AccountSettings() {
 
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4 pt-4">
         <button
-        
-        onClick={() =>    {if(userData?.data?.id) {deleteAccount(userData?.data?.id)}}}
-        className="flex items-center cursor-pointer p-2 rounded-lg gap-1.5 text-xs font-bold text-red-500 hover:text-red-600 hover:bg-gray-600 hover:text-white transition-colors">
+
+          onClick={() => { if (userData?.data?.id) { deleteAccount(userData?.data?.id) } }}
+          className="flex items-center cursor-pointer p-2 rounded-lg gap-1.5 text-xs font-bold text-red-500 hover:text-red-600 hover:bg-gray-600 hover:text-white transition-colors">
           {/* Trash Icon */}
           <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />

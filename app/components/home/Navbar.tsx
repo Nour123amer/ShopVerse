@@ -128,9 +128,9 @@ export default function Navbar() {
           {/* Mobile Icons */}
           {accessToken ?(
             <div className="flex items-center gap-5 mt-8">
-            <Heart onClick={()=>{navigate("/favorite")}} size={20} />
-            <ShoppingBag onClick={()=>{navigate("/cart")}} size={20} />
-            <User onClick={()=>{navigate("/profile")}} size={20} />
+            <Heart className="cursor-pointer" onClick={()=>{navigate("/favorite")}} size={20} />
+            <ShoppingBag className="cursor-pointer" onClick={()=>{navigate("/cart")}} size={20} />
+            <User className="cursor-pointer" onClick={()=>{navigate("/profile")}} size={20} />
           </div>
           ):(
             <button className="w-full mt-8 px-4 py-2 bg-black font-semibold text-white rounded-full text-sm

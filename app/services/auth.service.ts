@@ -207,7 +207,6 @@ export async function refreshToken(data:TokenRefresh) {
      method: "POST",
      headers: {
          "Content-Type": "application/json",
-        //  "authorization": `Bearer ${data.refreshToken}`
      },
      body: JSON.stringify({
         refreshToken:data.refreshToken
