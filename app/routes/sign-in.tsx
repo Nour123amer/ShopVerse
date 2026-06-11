@@ -28,6 +28,8 @@ export default function Signin() {
     })
     const [isLoading, setIsLoading] = useState(false)
     const [errors, setErrors] = useState<Record<string, string[] | undefined>>({});
+    const [isOpen, setIsOpen] = useState(false);
+    const [currentEmail, setCurrentEmail] = useState("");
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -96,7 +98,7 @@ export default function Signin() {
         const result = await forgotPassword({
 
             identifierType: "email",
-            identifier: localStorage.getItem("email") || "",
+            identifier: currentEmail,
             countryCode: "EG"
 
         })
@@ -170,9 +172,11 @@ export default function Signin() {
                             <FormLabel htmlFor="password" className='flex items-center justify-between mb-2 text-[#45474C]'>
                                 <span>Password</span>
                                 <span className='cursor-pointer'>
-                                    <Link
-                                        onClick={handleForgotPassword}
-                                        to="/reset-password">Forgot?</Link> </span>
+                                    <span
+                                        onClick={() => {
+                                            setIsOpen(!isOpen)
+                                        }}
+                                    >Forgot?</span> </span>
                             </FormLabel>
                             <InputField
                                 id='password'
@@ -205,6 +209,70 @@ export default function Signin() {
                     </form>
                 </div>
             </div>
+
+            {
+                isOpen && (
+                    <>
+                        <button
+                            onClick={() => setIsOpen(true)}
+                            className="px-4 py-2 bg-slate-900 text-white rounded-lg"
+                        >
+                            Open Popup
+                        </button>
+
+                        {isOpen && (
+                            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+                                <div className="bg-white rounded-xl p-6 w-[90%] max-w-md shadow-xl">
+                                    <div className="flex items-center justify-between mb-4">
+                                        <h2 className="text-lg font-semibold">
+                                            Enter Your Email
+                                        </h2>
+
+                                        <button
+                                            onClick={() => setIsOpen(false)}
+                                            className="text-gray-500 hover:text-black"
+                                        >
+                                            ✕
+                                        </button>
+                                    </div>
+
+                                    <form onSubmit={handleSubmit}>
+                                        <input
+                                            type="email"
+                                            placeholder="example@email.com"
+                                            value={currentEmail}
+                                            onChange={(e) => setCurrentEmail(e.target.value)}
+                                            required
+                                            className="w-full border rounded-lg px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-slate-500"
+                                        />
+
+                                        <div className="flex justify-end gap-2">
+                                            <button
+                                                type="button"
+                                                onClick={() => setIsOpen(false)}
+                                                className="px-4 py-2 border rounded-lg cursor-pointer"
+                                            >
+                                                Cancel
+                                            </button>
+
+                                            <button
+                                                type="submit"
+                                                className="px-4 py-2 bg-slate-900 text-white rounded-lg cursor-pointer"
+                                                onClick={() => {
+                                                    handleForgotPassword()
+                                                    setIsOpen(false)
+                                                }}
+                                            >
+                                                Submit
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        )}
+                    </>
+                )
+            }
         </>
     )
 }

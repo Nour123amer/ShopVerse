@@ -5,6 +5,8 @@ import { Label } from '~/components/ui/label';
 import { toast } from 'sonner';
 import resetPassword, { refreshToken, resetPassValidation } from '~/services/auth.service';
 import SubmitBtn from '~/components/form/SubmitBtn';
+import FormLabel from '~/components/form/Label';
+import InputField from '~/components/form/InputField';
 
 
 export default function ResetPassword() {
@@ -31,7 +33,9 @@ export default function ResetPassword() {
             token: storedToken,
             newPassword: newPass
            })
+             console.log("reset result ==>", res)
             if(res.ok){
+              console.log("reset result ==>", res.json())
                 setTimeout(() => {
                     navigate("/sign-in") 
                 }, 4000);
@@ -71,6 +75,21 @@ export default function ResetPassword() {
                     <form
                         onSubmit={handleResetPassword}
                         className='w-full lg:w-1/2 mx-auto flex flex-col justify-center my-8 bg-white     rounded-lg p-6'>
+                       
+                        {/* <div>
+                                               <FormLabel
+                                                htmlFor="email" className='mb-2 text-[#45474C]'>Email Address</FormLabel>
+                                               <InputField
+                                                   id="email"
+                                                   value={formData.email}
+                                                   onChange={handleChange}
+                                                   className='mb-3 bg-white text-[#C5C6CD]' name="email" type='email' placeholder="Alex@gmail.com" />
+                                               {errors.email && (
+                                                   <p className="text-red-500 text-sm">
+                                                       {errors.email[0]}
+                                                   </p>
+                                               )}
+                                           </div> */}
                         <div>
                             <Label htmlFor='password' className='mb-2 text-[#45474C]'>New Password</Label>
                             <Input
